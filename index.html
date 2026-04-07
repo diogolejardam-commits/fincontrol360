@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0f14">
+<meta name="mobile-web-app-capable" content="yes">
+<title>FinControl 360</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f14;font-family:-apple-system,BlinkMacSystemFont,sans-serif;overflow:hidden;height:100vh;height:100dvh}
+.splash{position:fixed;inset:0;background:#0a0f14;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .5s}
+.splash.hide{opacity:0;pointer-events:none}
+.splash .logo{font-size:32px;font-weight:800;letter-spacing:3px;margin-bottom:6px}
+.splash .a{color:#6e7681}.splash .g{color:#3fb950}
+.splash .sub{color:#3fb950;font-size:11px;letter-spacing:5px;font-weight:600;margin-bottom:30px}
+.spinner{width:28px;height:28px;border:2.5px solid #1b2332;border-top-color:#3fb950;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.splash .msg{color:#484f58;font-size:10px;margin-top:14px;letter-spacing:.5px}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:none;background:#0a0f14}
+</style>
+</head>
+<body>
+<div class="splash" id="splash">
+<div class="logo"><span class="a">FIN</span><span class="g">CONTROL</span></div>
+<div class="sub">360</div>
+<div class="spinner"></div>
+<div class="msg">Carregando painel...</div>
+</div>
+<iframe id="app" src="" allow="clipboard-write"></iframe>
+<script>
+var WEB_APP_URL='https://script.google.com/macros/s/AKfycbzYRcdH4KjiqQCrcL0vNhAUOehDRIZh_xPeE1oe-M8XQbFLVDnYDqlR2vUnGVwnQHV_dg/exec';
+setTimeout(function(){document.getElementById('app').src=WEB_APP_URL;},300);
+document.getElementById('app').addEventListener('load',function(){setTimeout(function(){document.getElementById('splash').classList.add('hide');},800);});
+setTimeout(function(){document.getElementById('splash').classList.add('hide');},8000);
+</script>
+</body>
+</html>
