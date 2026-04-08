@@ -1,0 +1,40 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs><clipPath id="rclip"><rect x="0" y="0" width="512" height="512" rx="96"/></clipPath></defs>
+<g clip-path="url(#rclip)">
+<rect x="0" y="0" width="512" height="512" rx="96" fill="#0D0D0D"/>
+<rect x="0" y="0" width="512" height="512" fill="none" stroke="#1A1A1A" stroke-width="1" rx="96"/>
+<circle cx="256" cy="230" r="138" fill="none" stroke="#2A2A2A" stroke-width="28"/>
+<circle cx="256" cy="230" r="138" fill="none" stroke="#6BBF3B" stroke-width="28" stroke-dasharray="650 220" stroke-dashoffset="-40" stroke-linecap="round"/>
+<path d="M350 118 L370 88" stroke="#6BBF3B" stroke-width="5" stroke-linecap="round"/>
+<path d="M370 88 L385 94" stroke="#6BBF3B" stroke-width="5" stroke-linecap="round"/>
+<path d="M370 88 L366 104" stroke="#6BBF3B" stroke-width="5" stroke-linecap="round"/>
+<circle cx="256" cy="230" r="90" fill="none" stroke="#1A1A1A" stroke-width="1"/>
+<g transform="translate(256,230)">
+<line x1="0" y1="-90" x2="0" y2="-78" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+<line x1="90" y1="0" x2="78" y2="0" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+<line x1="0" y1="90" x2="0" y2="78" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+<line x1="-90" y1="0" x2="-78" y2="0" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+<line x1="63.6" y1="-63.6" x2="55.2" y2="-55.2" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="63.6" y1="63.6" x2="55.2" y2="55.2" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="-63.6" y1="63.6" x2="-55.2" y2="55.2" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+<line x1="-63.6" y1="-63.6" x2="-55.2" y2="-55.2" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+<circle cx="256" cy="230" r="44" fill="#111" stroke="#333" stroke-width="1"/>
+<rect x="234" y="208" width="44" height="44" rx="6" fill="none" stroke="#6BBF3B" stroke-width="2.5"/>
+<line x1="246" y1="224" x2="252" y2="230" stroke="#6BBF3B" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="252" y1="230" x2="268" y2="214" stroke="#6BBF3B" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="242" y1="240" x2="270" y2="240" stroke="#6BBF3B" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+<g transform="translate(256,230)">
+<circle cx="0" cy="-115" r="5" fill="#6BBF3B" opacity="0.9"/>
+<circle cx="100" cy="-57" r="4" fill="#6BBF3B" opacity="0.6"/>
+<circle cx="100" cy="57" r="4" fill="#6BBF3B" opacity="0.4"/>
+<circle cx="-100" cy="-57" r="3.5" fill="#6BBF3B" opacity="0.5"/>
+</g>
+<text x="256" y="390" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="36" font-weight="800" letter-spacing="3">
+<tspan fill="#888">AUT</tspan><tspan fill="#B0B0B0">OM</tspan><tspan fill="#6BBF3B">O</tspan>
+</text>
+<text x="256" y="430" text-anchor="middle" fill="#6BBF3B" font-family="Arial,Helvetica,sans-serif" font-size="28" font-weight="300" letter-spacing="8">360°</text>
+<text x="256" y="464" text-anchor="middle" fill="#444" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="400" letter-spacing="4">GESTAO FINANCEIRA</text>
+<rect x="48" y="484" width="416" height="3" rx="1.5" fill="#6BBF3B" opacity="0.3"/>
+</g>
+</svg>
