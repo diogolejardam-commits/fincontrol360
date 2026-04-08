@@ -1,1 +1,298 @@
-{"type":"error","error":{"type":"not_found_error","message":"File not found in container: /mnt/user-data/outputs/index_final.txt","details":{"error_visibility":"user_facing"}},"request_id":"req_011CZrccP6Ki4VFdhanekMgp"}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinControl 360 — Gestão Financeira Completa</title>
+  <meta name="description" content="FinControl 360 — Controle total das suas finanças pessoais e empresariais direto no Google Sheets.">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <script type="text/javascript">function importHotmart(){var imported=document.createElement('script');imported.src='https://static.hotmart.com/checkout/widget.min.js';document.head.appendChild(imported);var link=document.createElement('link');link.rel='stylesheet';link.type='text/css';link.href='https://static.hotmart.com/css/hotmart-fb.min.css';document.head.appendChild(link);}importHotmart();</script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0a0e14;--bg-card:#12171e;--bg-elevated:#1a2130;--green:#3fb950;--green-dark:#2ea043;--green-soft:#2c6e3f;--green-glow:rgba(63,185,80,0.12);--green-glow-strong:rgba(63,185,80,0.30);--gold:#f0b429;--gray-100:#e6edf3;--gray-200:#c9d1d9;--gray-300:#8b949e;--gray-400:#636e7b;--gray-500:#484f58;--gray-700:#21262d;--blue:#58a6ff;--font-display:'Outfit',sans-serif;--font-mono:'JetBrains Mono',monospace}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--gray-100);font-family:var(--font-display);overflow-x:hidden;line-height:1.6}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(63,185,80,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(63,185,80,0.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+    .glow-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+    .glow-orb-1{width:600px;height:600px;background:radial-gradient(circle,var(--green-glow) 0%,transparent 70%);top:-200px;right:-100px;animation:orbFloat 8s ease-in-out infinite}
+    .glow-orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(46,160,67,0.06) 0%,transparent 70%);bottom:-100px;left:-100px;animation:orbFloat 12s ease-in-out infinite reverse}
+    @keyframes orbFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)}}
+    nav{position:fixed;top:0;width:100%;z-index:100;padding:0.75rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(10,14,20,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--gray-700)}
+    .nav-logo{display:flex;align-items:center;gap:0.6rem;text-decoration:none}
+    .nav-logo img{width:32px;height:32px;border-radius:8px}
+    .nav-logo span{font-weight:700;font-size:1rem;color:var(--gray-100);letter-spacing:1px}
+    .nav-logo span em{font-style:normal;color:var(--green)}
+    .nav-links{display:flex;gap:1.5rem;list-style:none}
+    .nav-links a{color:var(--gray-300);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.3s}
+    .nav-links a:hover{color:var(--green)}
+    .nav-cta{background:var(--green);color:var(--bg);padding:0.5rem 1.2rem;border-radius:8px;font-weight:700;font-size:0.8rem;text-decoration:none;transition:all 0.3s;letter-spacing:0.5px}
+    .nav-cta:hover{background:var(--green-dark);transform:translateY(-1px)}
+    section{position:relative;z-index:1}
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 4rem;gap:1.5rem}
+    .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-card);border:1px solid var(--gray-700);border-radius:100px;padding:0.4rem 1.2rem;font-size:0.75rem;color:var(--gray-300);font-family:var(--font-mono);animation:fadeUp 0.6s ease both}
+    .hero-badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--green-glow-strong)}50%{box-shadow:0 0 0 8px transparent}}
+    .hero-logo{width:110px;height:110px;border-radius:24px;box-shadow:0 0 60px var(--green-glow);animation:fadeUp 0.6s 0.1s ease both;transition:transform 0.4s}
+    .hero-logo:hover{transform:scale(1.05) rotate(-2deg)}
+    .hero h1{font-size:clamp(2.5rem,6vw,4.2rem);font-weight:900;line-height:1.05;letter-spacing:-1px;animation:fadeUp 0.6s 0.15s ease both}
+    .hero h1 .fin{color:var(--gray-300)}.hero h1 .control{color:var(--green)}
+    .hero h1 .t360{font-family:var(--font-mono);font-size:0.45em;color:var(--green);opacity:0.5;vertical-align:super;margin-left:4px}
+    .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:var(--gray-300);max-width:520px;font-weight:300;animation:fadeUp 0.6s 0.2s ease both}
+    .hero-price{animation:fadeUp 0.6s 0.25s ease both;display:flex;flex-direction:column;align-items:center;gap:0.25rem}
+    .hero-price .price-tag{font-family:var(--font-mono);font-size:2.2rem;font-weight:700;color:var(--green)}
+    .hero-price .price-tag small{font-size:0.45em;color:var(--gray-300);font-weight:400}
+    .hero-price .price-note{font-size:0.75rem;color:var(--gray-400)}
+    .hero-cta{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.6s 0.3s ease both}
+    .btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 1.8rem;border-radius:10px;font-family:var(--font-display);font-weight:700;font-size:0.9rem;text-decoration:none;letter-spacing:0.3px;transition:all 0.3s;cursor:pointer;border:none}
+    .btn-primary{background:var(--green);color:var(--bg);box-shadow:0 4px 24px var(--green-glow)}
+    .btn-primary:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 8px 32px var(--green-glow-strong)}
+    .btn-mobile{background:var(--bg-card);color:var(--blue);border:1px solid rgba(88,166,255,0.3)}
+    .btn-mobile:hover{border-color:var(--blue);background:rgba(88,166,255,0.08);transform:translateY(-2px)}
+    .btn-secondary{background:var(--bg-card);color:var(--gray-100);border:1px solid var(--gray-700)}
+    .btn-secondary:hover{border-color:var(--green);color:var(--green);transform:translateY(-2px)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .section-tag{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--font-mono);font-size:0.7rem;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem}
+    .section-tag::before{content:'';width:20px;height:1px;background:var(--green)}
+    .section-title{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;margin-bottom:0.5rem}
+    .section-subtitle{color:var(--gray-300);font-weight:300;max-width:500px;margin:0 auto 3rem;font-size:0.95rem}
+    .features{padding:5rem 2rem;max-width:1100px;margin:0 auto;text-align:center}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem}
+    .feature-card{background:var(--bg-card);border:1px solid var(--gray-700);border-radius:14px;padding:1.75rem;transition:all 0.35s;position:relative;overflow:hidden;text-align:left}
+    .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:0;transition:opacity 0.35s}
+    .feature-card:hover{border-color:rgba(63,185,80,0.25);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+    .feature-card:hover::before{opacity:1}
+    .feature-icon{width:44px;height:44px;border-radius:10px;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1rem;border:1px solid var(--gray-700)}
+    .feature-card h3{font-size:1rem;font-weight:700;margin-bottom:0.4rem}
+    .feature-card p{font-size:0.85rem;color:var(--gray-300);font-weight:300;line-height:1.7}
+    .screenshots{padding:5rem 2rem;text-align:center}
+    .screenshots-container{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+    .screenshot-card{background:var(--bg-card);border:1px solid var(--gray-700);border-radius:14px;overflow:hidden;transition:all 0.35s}
+    .screenshot-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3);border-color:rgba(63,185,80,0.2)}
+    .screenshot-preview{width:100%;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;position:relative}
+    .screenshot-preview .mock-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--bg-elevated) 0%,var(--bg) 100%)}
+    .screenshot-preview .mock-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0.5rem}
+    .screenshot-preview .mock-icon{font-size:2.5rem}
+    .screenshot-preview .mock-label{font-size:0.7rem;color:var(--gray-400);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase}
+    .mock-bars{display:flex;gap:4px;align-items:flex-end;height:40px}
+    .mock-bar{width:8px;border-radius:2px}
+    .screenshot-info{padding:1rem 1.25rem;border-top:1px solid var(--gray-700)}
+    .screenshot-info h4{font-size:0.9rem;font-weight:600;margin-bottom:0.2rem}
+    .screenshot-info p{font-size:0.8rem;color:var(--gray-400);font-weight:300}
+    .stats{padding:3rem 2rem;max-width:900px;margin:0 auto}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
+    .stat-item{padding:1.5rem 1rem;background:var(--bg-card);border:1px solid var(--gray-700);border-radius:14px}
+    .stat-number{font-family:var(--font-mono);font-size:2rem;font-weight:700;color:var(--green);line-height:1;margin-bottom:0.4rem}
+    .stat-label{font-size:0.75rem;color:var(--gray-300);font-weight:300}
+    .testimonials{padding:5rem 2rem;text-align:center}
+    .testimonials-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
+    .testimonial-card{background:var(--bg-card);border:1px solid var(--gray-700);border-radius:14px;padding:1.75rem;text-align:left;transition:all 0.3s}
+    .testimonial-card:hover{border-color:rgba(63,185,80,0.2);transform:translateY(-2px)}
+    .testimonial-stars{color:var(--gold);font-size:0.85rem;margin-bottom:0.75rem;letter-spacing:2px}
+    .testimonial-text{font-size:0.9rem;color:var(--gray-200);font-weight:300;line-height:1.7;margin-bottom:1.25rem;font-style:italic}
+    .testimonial-author{display:flex;align-items:center;gap:0.75rem}
+    .testimonial-avatar{width:38px;height:38px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--gray-700);display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:700;color:var(--green)}
+    .testimonial-name{font-size:0.85rem;font-weight:600}
+    .testimonial-role{font-size:0.7rem;color:var(--gray-400)}
+    .pricing{padding:5rem 2rem;text-align:center}
+    .pricing-card{max-width:440px;margin:0 auto;background:var(--bg-card);border:2px solid var(--green-soft);border-radius:20px;padding:2.5rem 2rem;position:relative;overflow:hidden}
+    .pricing-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green-dark),var(--green),var(--green-dark))}
+    .pricing-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:300px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--green-glow) 0%,transparent 70%);pointer-events:none}
+    .pricing-content{position:relative;z-index:1}
+    .pricing-label{font-family:var(--font-mono);font-size:0.7rem;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem}
+    .pricing-name{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem}
+    .pricing-amount{font-family:var(--font-mono);font-size:3.5rem;font-weight:700;color:var(--green);line-height:1;margin-bottom:0.25rem}
+    .pricing-amount small{font-size:0.35em;color:var(--gray-300);font-weight:400}
+    .pricing-period{font-size:0.8rem;color:var(--gray-400);margin-bottom:2rem}
+    .pricing-features{list-style:none;text-align:left;margin-bottom:2rem}
+    .pricing-features li{padding:0.6rem 0;font-size:0.9rem;color:var(--gray-200);border-bottom:1px solid var(--gray-700);display:flex;align-items:center;gap:0.6rem}
+    .pricing-features li:last-child{border:none}
+    .pricing-features .check{color:var(--green);font-size:1rem}
+    .pricing-buttons{display:flex;flex-direction:column;gap:0.75rem}
+    .pricing-buttons .btn{justify-content:center;width:100%}
+    .faq{padding:5rem 2rem;text-align:center}
+    .faq-list{max-width:700px;margin:0 auto;text-align:left}
+    .faq-item{border-bottom:1px solid var(--gray-700)}
+    .faq-question{width:100%;background:none;border:none;color:var(--gray-100);font-family:var(--font-display);font-size:0.95rem;font-weight:600;padding:1.25rem 0;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:color 0.3s}
+    .faq-question:hover{color:var(--green)}
+    .faq-arrow{font-size:1.2rem;color:var(--gray-500);transition:transform 0.3s,color 0.3s}
+    .faq-item.open .faq-arrow{transform:rotate(45deg);color:var(--green)}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.35s;font-size:0.85rem;color:var(--gray-300);line-height:1.8;font-weight:300}
+    .faq-item.open .faq-answer{max-height:200px;padding-bottom:1.25rem}
+    .cta-final{padding:5rem 2rem;text-align:center}
+    .cta-box{max-width:600px;margin:0 auto;background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-elevated) 100%);border:1px solid var(--gray-700);border-radius:20px;padding:3rem 2rem;position:relative;overflow:hidden}
+    .cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top center,var(--green-glow) 0%,transparent 60%);pointer-events:none}
+    .cta-box>*{position:relative;z-index:1}
+    .cta-box h2{font-size:1.8rem;font-weight:700;margin-bottom:0.5rem}
+    .cta-box p{color:var(--gray-300);margin-bottom:2rem;font-weight:300}
+    .cta-buttons{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+    footer{position:relative;z-index:1;text-align:center;padding:2.5rem 2rem;border-top:1px solid var(--gray-700);color:var(--gray-500);font-size:0.75rem;font-family:var(--font-mono)}
+    @media(max-width:768px){nav{padding:0.6rem 1rem}.nav-links{display:none}.hero{padding:5rem 1.5rem 3rem}.hero-logo{width:90px;height:90px;border-radius:20px}.stats-grid{grid-template-columns:repeat(2,1fr)}.hero-cta,.cta-buttons{flex-direction:column;align-items:center}.pricing-card{margin:0 1rem}}
+  </style>
+</head>
+<body>
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <nav>
+    <a href="#" class="nav-logo"><img src="icon-192.png" alt="FinControl 360"><span><span class="fin">FIN</span><em>CONTROL</em></span></a>
+    <ul class="nav-links">
+      <li><a href="#recursos">Recursos</a></li>
+      <li><a href="#screenshots">Preview</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://github.com/diogolejardam-commits/fincontrol360" target="_blank">GitHub</a></li>
+    </ul>
+    <a onclick="return false;" href="https://pay.hotmart.com/Q105286190N?checkoutMode=2" class="nav-cta hotmart-fb hotmart__button-checkout">ADQUIRIR — R$47</a>
+  </nav>
+  <section class="hero">
+    <div class="hero-badge"><span class="dot"></span> v1.0 — Google Sheets + Mobile</div>
+    <img src="icon-512.png" alt="FinControl 360" class="hero-logo">
+    <h1><span class="fin">FIN</span><span class="control">CONTROL</span><span class="t360">360</span></h1>
+    <p class="hero-sub">Controle total das suas finanças pessoais e empresariais. Dashboard inteligente, controle de crédito e gestão de crise — tudo no Google Sheets.</p>
+    <div class="hero-price">
+      <div class="price-tag"><small>R$</small>47</div>
+      <div class="price-note">Pagamento único • Acesso vitalício</div>
+    </div>
+    <div class="hero-cta">
+      <a onclick="return false;" href="https://pay.hotmart.com/Q105286190N?checkoutMode=2" class="btn btn-primary hotmart-fb hotmart__button-checkout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Comprar Agora
+      </a>
+      <a href="https://diogolejardam-commits.github.io/fincontrol360/app.html" class="btn btn-mobile" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        App Mobile
+      </a>
+    </div>
+  </section>
+  <section class="stats">
+    <div class="stats-grid">
+      <div class="stat-item"><div class="stat-number">9+</div><div class="stat-label">Abas integradas</div></div>
+      <div class="stat-item"><div class="stat-number">360°</div><div class="stat-label">Visão financeira</div></div>
+      <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Google Sheets</div></div>
+      <div class="stat-item"><div class="stat-number">📱</div><div class="stat-label">App Mobile</div></div>
+    </div>
+  </section>
+  <section class="features" id="recursos">
+    <div class="section-tag">Recursos</div>
+    <h2 class="section-title">Tudo que você precisa</h2>
+    <p class="section-subtitle">Gestão financeira completa em uma única planilha com app mobile incluso</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">📊</div><h3>Dashboard Inteligente</h3><p>KPIs, gráficos e sinaleiros que atualizam automaticamente. Visão 360° das suas finanças em tempo real.</p></div>
+      <div class="feature-card"><div class="feature-icon">💳</div><h3>Controle de Crédito</h3><p>Gerencie cartões, parcelas e faturas com cálculo automático de vencimentos e valores por parcela.</p></div>
+      <div class="feature-card"><div class="feature-icon">📅</div><h3>Contas a Pagar</h3><p>Controle de vencimentos com alertas visuais, status automático e lançamento integrado.</p></div>
+      <div class="feature-card"><div class="feature-icon">🚨</div><h3>Gerenciamento de Crise</h3><p>Dashboard estilo ERP para controlar dívidas, prioridades, parcelas e projeções de pagamento.</p></div>
+      <div class="feature-card"><div class="feature-icon">📄</div><h3>Extrato Mensal & PDF</h3><p>Gere extratos detalhados com breakdown por categoria, barras visuais e exporte tudo em PDF.</p></div>
+      <div class="feature-card"><div class="feature-icon">📱</div><h3>App Mobile</h3><p>Cadastre lançamentos direto do celular. Instale como app na tela inicial do iPhone ou Android.</p></div>
+    </div>
+  </section>
+  <section class="screenshots" id="screenshots">
+    <div class="section-tag">Preview</div>
+    <h2 class="section-title">Veja na prática</h2>
+    <p class="section-subtitle">Uma prévia de como o FinControl 360 funciona no dia a dia</p>
+    <div class="screenshots-container">
+      <div class="screenshot-card">
+        <div class="screenshot-preview"><div class="mock-bg"></div><div class="mock-content"><div class="mock-bars"><div class="mock-bar" style="height:15px;background:var(--green)"></div><div class="mock-bar" style="height:28px;background:var(--green)"></div><div class="mock-bar" style="height:22px;background:var(--green)"></div><div class="mock-bar" style="height:35px;background:var(--green)"></div><div class="mock-bar" style="height:18px;background:#2ea043"></div></div><div class="mock-label">Dashboard</div></div></div>
+        <div class="screenshot-info"><h4>Dashboard Principal</h4><p>KPIs de receita, despesa, saldo e crédito atualizados em tempo real</p></div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-preview"><div class="mock-bg"></div><div class="mock-content"><div class="mock-icon">💳</div><div class="mock-label">Crédito</div></div></div>
+        <div class="screenshot-info"><h4>Controle de Cartões</h4><p>Parcelas, vencimentos e faturas organizados automaticamente</p></div>
+      </div>
+      <div class="screenshot-card">
+        <div class="screenshot-preview"><div class="mock-bg"></div><div class="mock-content"><div class="mock-icon">📱</div><div class="mock-label">Mobile App</div></div></div>
+        <div class="screenshot-info"><h4>App no Celular</h4><p>Interface otimizada para cadastrar lançamentos em qualquer lugar</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="testimonials" id="depoimentos">
+    <div class="section-tag">Depoimentos</div>
+    <h2 class="section-title">Quem usa, aprova</h2>
+    <p class="section-subtitle">Veja o que nossos usuários dizem sobre o FinControl 360</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Finalmente consegui organizar todas as minhas finanças em um lugar só. O dashboard é incrível e o app mobile salvou minha vida."</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">M</div><div><div class="testimonial-name">Marcos S.</div><div class="testimonial-role">Empreendedor</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"O gerenciamento de crise me ajudou a sair de R$80 mil em dívidas. Consigo ver tudo organizado por prioridade e parcela."</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">A</div><div><div class="testimonial-name">Ana P.</div><div class="testimonial-role">Autônoma</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Melhor que muito app pago por aí. Usar no Google Sheets foi genial — não preciso instalar nada e funciona em qualquer lugar."</p>
+        <div class="testimonial-author"><div class="testimonial-avatar">R</div><div><div class="testimonial-name">Rafael L.</div><div class="testimonial-role">Gestor Financeiro</div></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="pricing" id="preco">
+    <div class="section-tag">Investimento</div>
+    <h2 class="section-title">Comece a controlar hoje</h2>
+    <p class="section-subtitle">Pagamento único, acesso vitalício, atualizações inclusas</p>
+    <div class="pricing-card">
+      <div class="pricing-glow"></div>
+      <div class="pricing-content">
+        <div class="pricing-label">Acesso Completo</div>
+        <div class="pricing-name">FinControl 360°</div>
+        <div class="pricing-amount"><small>R$ </small>47</div>
+        <div class="pricing-period">Pagamento único • Sem mensalidade</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Planilha completa com 9+ abas</li>
+          <li><span class="check">✓</span> Dashboard com KPIs automáticos</li>
+          <li><span class="check">✓</span> Controle de crédito e parcelas</li>
+          <li><span class="check">✓</span> Gerenciamento de crise (dívidas)</li>
+          <li><span class="check">✓</span> Extrato mensal + exportação PDF</li>
+          <li><span class="check">✓</span> App Mobile (iPhone/Android)</li>
+          <li><span class="check">✓</span> Sidebar integrada para cadastros</li>
+          <li><span class="check">✓</span> Atualizações vitalícias</li>
+        </ul>
+        <div class="pricing-buttons">
+          <a onclick="return false;" href="https://pay.hotmart.com/Q105286190N?checkoutMode=2" class="btn btn-primary hotmart-fb hotmart__button-checkout" style="font-size:1rem;padding:1rem">ADQUIRIR AGORA — R$47</a>
+          <a href="https://diogolejardam-commits.github.io/fincontrol360/app.html" class="btn btn-mobile" target="_blank">📱 Testar App Mobile</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="faq" id="faq">
+    <div class="section-tag">Dúvidas</div>
+    <h2 class="section-title">Perguntas Frequentes</h2>
+    <p class="section-subtitle">Tudo que você precisa saber antes de começar</p>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-question">Como funciona a planilha?<span class="faq-arrow">+</span></button><div class="faq-answer">O FinControl 360 é uma planilha Google Sheets com automações via Apps Script. Após a compra, você recebe uma cópia da planilha no seu Google Drive. Tudo funciona online, sem instalar nada.</div></div>
+      <div class="faq-item"><button class="faq-question">Funciona no celular?<span class="faq-arrow">+</span></button><div class="faq-answer">Sim! Além da planilha funcionar no app Google Sheets, o FinControl 360 inclui um Web App mobile otimizado que você instala como atalho na tela inicial do iPhone ou Android.</div></div>
+      <div class="faq-item"><button class="faq-question">Preciso saber mexer em planilha?<span class="faq-arrow">+</span></button><div class="faq-answer">Não! O FinControl 360 foi projetado para leigos. Basta usar a sidebar ou o app mobile para cadastrar seus lançamentos. Tudo é calculado e organizado automaticamente.</div></div>
+      <div class="faq-item"><button class="faq-question">Tem suporte?<span class="faq-arrow">+</span></button><div class="faq-answer">Sim! Oferecemos suporte via WhatsApp para dúvidas sobre configuração e uso da planilha. Além disso, atualizações são inclusas no valor.</div></div>
+      <div class="faq-item"><button class="faq-question">Posso usar para empresa?<span class="faq-arrow">+</span></button><div class="faq-answer">O FinControl 360 é ideal para finanças pessoais e pequenas empresas. O módulo de Gerenciamento de Crise e o DRE atendem perfeitamente negócios de pequeno e médio porte.</div></div>
+      <div class="faq-item"><button class="faq-question">E se eu não gostar?<span class="faq-arrow">+</span></button><div class="faq-answer">Oferecemos garantia de 7 dias. Se não gostar, devolvemos 100% do valor sem perguntas.</div></div>
+    </div>
+  </section>
+  <section class="cta-final">
+    <div class="cta-box">
+      <h2>Pronto para ter controle total?</h2>
+      <p>Pare de perder dinheiro por falta de organização. Comece hoje com o FinControl 360.</p>
+      <div class="cta-buttons">
+        <a onclick="return false;" href="https://pay.hotmart.com/Q105286190N?checkoutMode=2" class="btn btn-primary hotmart-fb hotmart__button-checkout">ADQUIRIR — R$47</a>
+        <a href="https://diogolejardam-commits.github.io/fincontrol360/app.html" class="btn btn-mobile" target="_blank">📱 App Mobile</a>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>FinControl 360 &copy; 2026 — Feito com <span style="color:var(--green)">&#9679;</span> para quem quer controle total</p>
+  </footer>
+  <script>
+    document.querySelectorAll('.faq-question').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var item=this.parentElement;
+        var wasOpen=item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open')});
+        if(!wasOpen)item.classList.add('open');
+      });
+    });
+  </script>
+</body>
+</html>
