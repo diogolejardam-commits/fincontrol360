@@ -1,50 +1,366 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FC360">
-  <meta name="theme-color" content="#0a0a0f">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <title>FinControl 360</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      background: #0a0a0f; color: #e6edf3; min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; text-align: center; padding: 2rem;
-    }
-    .logo { width: 80px; height: 80px; border-radius: 18px; margin-bottom: 1.5rem; animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
-    h1 { font-size: 22px; font-weight: 800; letter-spacing: 2px; margin-bottom: 0.5rem; }
-    h1 .a { color: #8b949e; } h1 .g { color: #3fb950; }
-    .sub { font-size: 12px; color: #636e7b; margin-bottom: 2rem; }
-    .loading { font-size: 14px; color: #3fb950; margin-bottom: 1rem; }
-    .dots::after { content: ''; animation: dots 1.5s steps(4) infinite; }
-    @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
-    .manual-link { margin-top: 2rem; }
-    .manual-link a { color: #58a6ff; text-decoration: none; padding: 10px 20px; border: 1px solid #58a6ff; border-radius: 10px; display: inline-block; font-size: 14px; }
-  </style>
-</head>
-<body>
-  <img class="logo" src="icon-192.png" alt="FinControl 360">
-  <h1><span class="a">FIN</span><span class="g">CONTROL</span> <span style="color:#3fb950;font-size:14px">360</span></h1>
-  <p class="sub">Gestao Financeira</p>
-  <p class="loading">Carregando<span class="dots"></span></p>
-  <div class="manual-link">
-    <a href="https://script.google.com/macros/s/AKfycbxN8k3wkgS39rvaTA0Oz413IRrS4sdhJApSkLrSQnCBuljRCU2EgFoPvScHNptQIk_rbA/exec">Abrir App</a>
-  </div>
-  <script>
-    setTimeout(function() {
-      window.location.href = "https://script.google.com/macros/s/AKfycbxN8k3wkgS39rvaTA0Oz413IRrS4sdhJApSkLrSQnCBuljRCU2EgFoPvScHNptQIk_rbA/exec";
-    }, 1500);
-  </script>
-</body>
-</html>
+// ═══════════════════════════════════════════════════════════════════════════════
+// AUTOMO_MOBILE.gs — v4.0 FINCONTROL 360
+// Cole no projeto VINCULADO (Extensões → Apps Script → AUTOMO_MOBILE.gs)
+//
+// DESIGN: FinControl 360 — dark fintech theme, Plus Jakarta Sans
+// BUGFIX: banco → col G (7), col F (6) = Logo IMAGE → SKIP
+//
+// DEPLOY (se usar standalone):
+// 1. Cole este código (Ctrl+A → Delete → Ctrl+V → Ctrl+S)
+// 2. Implantar → Gerenciar implantações → editar → Nova versão → Salvar
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function doGet(e) {
+  var action = e && e.parameter && e.parameter.action;
+  if (action === 'resumo') {
+    var kpis = webResumoMensal();
+    var alertas = webAlertasContas();
+    return ContentService.createTextOutput(JSON.stringify({
+      kpis: JSON.parse(kpis),
+      alertas: JSON.parse(alertas)
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+  return HtmlService.createHtmlOutput(_mobileHTML())
+    .setTitle('FinControl 360')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+}
+
+// ═══════════════ SERVER-SIDE ═══════════════
+
+function webCarregarDados() {
+  try {
+    var cad = _carregarCadastros();
+    var kpis = webResumoMensal();
+    var alertas = webAlertasContas();
+    return JSON.stringify({ cadastros: cad, kpis: JSON.parse(kpis), alertas: JSON.parse(alertas) });
+  } catch (e) {
+    return JSON.stringify({ erro: e.message });
+  }
+}
+
+function webKPIs() {
+  return webResumoMensal();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// webSalvarLanc — banco → col G (7), col F (6) = Logo IMAGE SKIP
+// ═══════════════════════════════════════════════════════════════════════════════
+function webSalvarLanc(jsonStr) {
+  try {
+    var d = JSON.parse(jsonStr);
+    var abaDestino = d.aba || 'lancamento';
+    if (abaDestino === 'contapagar') return _slvContasPagar(d);
+    if (abaDestino === 'credito') return _slvCred(d);
+    return _slv(d);
+  } catch (e) {
+    return 'ERRO|' + e.message;
+  }
+}
+
+// ═══════════════ HTML MOBILE — FinControl 360 ═══════════════
+
+function _mobileHTML() {
+  var css = ''
+  // ── RESET ──
+  + '*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}'
+  + 'html,body{height:100%;overflow-x:hidden}'
+  + 'body{font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;'
+  + 'background:#0a0e17;color:#e2e8f0;font-size:14px;padding-bottom:80px}'
+  + '@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");'
+
+  // ── HEADER ──
+  + '.hdr{background:rgba(17,24,39,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);'
+  + 'border-bottom:1px solid #1e2a3a;padding:14px 16px;display:flex;align-items:center;gap:10px;'
+  + 'position:sticky;top:0;z-index:100}'
+  + '.hdr-icon{width:36px;height:36px;border-radius:10px;'
+  + 'background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;'
+  + 'justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}'
+  + '.hdr-t{font-size:17px;font-weight:800;letter-spacing:-.3px}'
+  + '.hdr-t span{color:#22c55e}'
+  + '.hdr-s{font-size:11px;color:#64748b}'
+
+  // ── KPI GRID ──
+  + '.kg{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}'
+  + '.ki{background:#111827;border:1px solid #1e2a3a;border-radius:14px;padding:12px;text-align:center}'
+  + '.ki .l{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:600}'
+  + '.ki .v{font-size:18px;font-weight:800;margin-top:3px;letter-spacing:-.5px}'
+  + '.ki-full{grid-column:1/-1;padding:14px}'
+  + '.ki-full .v{font-size:24px}'
+  + '.grn{color:#22c55e}.red{color:#ef4444}.blu{color:#3b82f6}.amb{color:#f59e0b}'
+
+  // ── ALERTAS ──
+  + '.al-sec{margin:0 12px 8px;background:#111827;border:1px solid #1e2a3a;border-radius:14px;overflow:hidden}'
+  + '.al-hd{padding:10px 14px 6px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}'
+  + '.al-it{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-top:1px solid #1e2a3a}'
+  + '.al-desc{font-size:12px;font-weight:600}.al-meta{font-size:10px;color:#64748b;margin-top:1px}'
+  + '.al-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}'
+  + '.bg-ven{background:rgba(239,68,68,.12);color:#ef4444}'
+  + '.bg-hoj{background:rgba(245,158,11,.12);color:#f59e0b}'
+  + '.bg-prx{background:rgba(59,130,246,.12);color:#3b82f6}'
+  + '.al-ok{padding:20px;text-align:center;color:#64748b;font-size:12px}'
+
+  // ── TABS ──
+  + '.tabs{display:flex;background:rgba(17,24,39,.96);backdrop-filter:blur(20px);'
+  + 'border-bottom:1px solid #1e2a3a;position:sticky;top:54px;z-index:99}'
+  + '.tab{flex:1;padding:11px 0;text-align:center;font-size:11px;font-weight:700;'
+  + 'color:#475569;cursor:pointer;border-bottom:2px solid transparent;transition:.2s;letter-spacing:.3px}'
+  + '.tab.on{color:#22c55e;border-bottom-color:#22c55e}'
+
+  // ── FORMS ──
+  + '.fm{padding:14px;display:none}.fm.on{display:block}'
+  + '.fd{margin-bottom:10px}'
+  + '.fd label{display:block;font-size:10px;color:#64748b;margin-bottom:3px;'
+  + 'text-transform:uppercase;letter-spacing:.5px;font-weight:600}'
+  + '.fd input,.fd select{width:100%;padding:10px 12px;border:1px solid #1e2a3a;'
+  + 'border-radius:10px;background:#111827;color:#e2e8f0;font-size:14px;'
+  + 'font-family:inherit;-webkit-appearance:none;transition:.2s}'
+  + '.fd input:focus,.fd select:focus{border-color:#22c55e;outline:none;box-shadow:0 0 0 3px rgba(34,197,94,.1)}'
+  + '.rw{display:flex;gap:8px}.rw .fd{flex:1}'
+
+  // ── BUTTONS ──
+  + '.btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;'
+  + 'font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit;transition:.15s;'
+  + 'box-shadow:0 4px 15px rgba(0,0,0,.3)}'
+  + '.btn:active{transform:scale(.97)}'
+  + '.btn-g{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}'
+  + '.btn-r{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}'
+  + '.btn-b{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}'
+  + '.btn-o{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}'
+
+  // ── TOAST ──
+  + '.tst{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);'
+  + 'padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;'
+  + 'opacity:0;transition:.3s;z-index:200;pointer-events:none;max-width:90%;text-align:center}'
+  + '.tst.show{opacity:1;transform:translateX(-50%) translateY(0)}'
+  + '.tst.ok{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}'
+  + '.tst.err{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}'
+
+  // ── BOTTOM NAV ──
+  + '.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(17,24,39,.97);'
+  + 'backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid #1e2a3a;'
+  + 'display:flex;padding:6px 0;padding-bottom:max(6px,env(safe-area-inset-bottom));z-index:100}'
+  + '.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 0;'
+  + 'font-size:9px;font-weight:600;color:#475569;cursor:pointer;transition:.2s;text-decoration:none}'
+  + '.ni.on{color:#22c55e}.ni-ic{font-size:18px}'
+
+  // ── CRISE SECTION ──
+  + '.cr-sec{margin:0 12px 12px;background:#111827;border:1px solid #1e2a3a;border-radius:14px;padding:14px}'
+  + '.cr-row{display:flex;justify-content:space-between;margin-bottom:6px}'
+  + '.cr-lbl{font-size:10px;color:#64748b;text-transform:uppercase;font-weight:600}'
+  + '.cr-val{font-size:16px;font-weight:800;margin-top:2px}'
+  + '.prg{height:5px;background:#1e2a3a;border-radius:3px;margin:8px 0;overflow:hidden}'
+  + '.prg-f{height:100%;border-radius:3px;background:linear-gradient(90deg,#22c55e,#3b82f6);transition:.6s}'
+  + '.cr-ft{display:flex;justify-content:space-between;font-size:11px;color:#64748b}'
+  + '.cr-ft strong{font-weight:700}';
+
+  // ════════════ HTML ════════════
+  var html = ''
+  // Header
+  + '<div class="hdr">'
+  + '<div class="hdr-icon">FC</div>'
+  + '<div><div class="hdr-t">Fin<span>Control</span> 360</div>'
+  + '<div class="hdr-s" id="hdrDate"></div></div></div>'
+
+  // KPIs
+  + '<div class="kg" id="kpiGrid">'
+  + '<div class="ki"><div class="l">Receitas</div><div class="v grn" id="kR">...</div></div>'
+  + '<div class="ki"><div class="l">Despesas</div><div class="v red" id="kD">...</div></div>'
+  + '<div class="ki"><div class="l">Fatura CC</div><div class="v amb" id="kF">...</div></div>'
+  + '<div class="ki"><div class="l">Pagos</div><div class="v blu" id="kP">...</div></div>'
+  + '<div class="ki ki-full"><div class="l">Saldo L\u00edquido</div><div class="v" id="kS">...</div></div>'
+  + '</div>'
+
+  // Alertas
+  + '<div class="al-sec"><div class="al-hd">\u26a1 Contas Pr\u00f3ximas</div>'
+  + '<div id="alBox"><div class="al-ok">\u2705 Sem contas vencendo</div></div></div>'
+
+  // Crise
+  + '<div class="cr-sec">'
+  + '<div class="al-hd" style="padding:0 0 6px">\u26a0\ufe0f Gest\u00e3o de Crise</div>'
+  + '<div class="cr-row"><div><div class="cr-lbl">D\u00edvida Total</div>'
+  + '<div class="cr-val red" id="crD">...</div></div>'
+  + '<div style="text-align:right"><div class="cr-lbl">Progresso</div>'
+  + '<div class="cr-val grn" id="crP">...</div></div></div>'
+  + '<div class="prg"><div class="prg-f" id="crBar" style="width:0%"></div></div>'
+  + '<div class="cr-ft"><span>Pago: <strong class="grn" id="crPg">R$ 0</strong></span>'
+  + '<span>Saldo: <strong class="amb" id="crSl">R$ 0</strong></span>'
+  + '<span>Atraso: <strong class="red" id="crAt">0</strong></span></div></div>'
+
+  // Tabs
+  + '<div class="tabs">'
+  + '<div class="tab on" onclick="sw(this,\'despesa\')">Despesa</div>'
+  + '<div class="tab" onclick="sw(this,\'receita\')">Receita</div>'
+  + '<div class="tab" onclick="sw(this,\'cartao\')">Cart\u00e3o</div>'
+  + '<div class="tab" onclick="sw(this,\'cp\')">Conta Pagar</div></div>'
+
+  // Form Despesa
+  + '<div class="fm on" id="f_despesa">'
+  + '<div class="rw"><div class="fd"><label>Data</label><input type="date" id="d_dt"></div>'
+  + '<div class="fd"><label>Vencimento</label><input type="date" id="d_vc"></div></div>'
+  + '<div class="fd"><label>Descri\u00e7\u00e3o</label><input type="text" id="d_ds" placeholder="Ex: Conta de luz"></div>'
+  + '<div class="rw"><div class="fd"><label>Valor R$</label><input type="number" id="d_vl" step="0.01" placeholder="0,00"></div>'
+  + '<div class="fd"><label>Parcela</label><input type="text" id="d_pc" value="1/1"></div></div>'
+  + '<div class="fd"><label>Banco</label><select id="d_bk"><option value="">Selecione...</option></select></div>'
+  + '<div class="fd"><label>Categoria</label><select id="d_ct"><option value="">Selecione...</option></select></div>'
+  + '<button class="btn btn-r" onclick="sv(\'despesa\')">Salvar Despesa</button></div>'
+
+  // Form Receita
+  + '<div class="fm" id="f_receita">'
+  + '<div class="rw"><div class="fd"><label>Data</label><input type="date" id="r_dt"></div>'
+  + '<div class="fd"><label>Vencimento</label><input type="date" id="r_vc"></div></div>'
+  + '<div class="fd"><label>Descri\u00e7\u00e3o</label><input type="text" id="r_ds" placeholder="Ex: Sal\u00e1rio"></div>'
+  + '<div class="rw"><div class="fd"><label>Valor R$</label><input type="number" id="r_vl" step="0.01"></div>'
+  + '<div class="fd"><label>Parcela</label><input type="text" id="r_pc" value="1/1"></div></div>'
+  + '<div class="fd"><label>Banco</label><select id="r_bk"><option value="">Selecione...</option></select></div>'
+  + '<div class="fd"><label>Categoria</label><select id="r_ct"><option value="">Selecione...</option></select></div>'
+  + '<button class="btn btn-g" onclick="sv(\'receita\')">Salvar Receita</button></div>'
+
+  // Form Cartão
+  + '<div class="fm" id="f_cartao">'
+  + '<div class="fd"><label>Data da Compra</label><input type="date" id="c_dt"></div>'
+  + '<div class="fd"><label>Cart\u00e3o</label><select id="c_cr"><option value="">Selecione...</option></select></div>'
+  + '<div class="fd"><label>Descri\u00e7\u00e3o</label><input type="text" id="c_ds" placeholder="Ex: Compra online"></div>'
+  + '<div class="fd"><label>Categoria</label><select id="c_ct"><option value="">Selecione...</option></select></div>'
+  + '<div class="rw"><div class="fd"><label>Valor Total R$</label><input type="number" id="c_vl" step="0.01"></div>'
+  + '<div class="fd"><label>Parcelas</label><input type="number" id="c_pc" value="1" min="1"></div></div>'
+  + '<button class="btn btn-b" onclick="sv(\'cartao\')">Salvar Cr\u00e9dito</button></div>'
+
+  // Form Conta a Pagar
+  + '<div class="fm" id="f_cp">'
+  + '<div class="rw"><div class="fd"><label>Data</label><input type="date" id="p_dt"></div>'
+  + '<div class="fd"><label>Vencimento</label><input type="date" id="p_vc"></div></div>'
+  + '<div class="fd"><label>Descri\u00e7\u00e3o</label><input type="text" id="p_ds" placeholder="Ex: Aluguel"></div>'
+  + '<div class="rw"><div class="fd"><label>Valor Total R$</label><input type="number" id="p_vl" step="0.01"></div>'
+  + '<div class="fd"><label>Parcelas</label><input type="number" id="p_pc" value="1" min="1"></div></div>'
+  + '<div class="fd"><label>Banco</label><select id="p_bk"><option value="">Selecione...</option></select></div>'
+  + '<div class="fd"><label>Conta</label><input type="text" id="p_co" placeholder="Opcional"></div>'
+  + '<div class="fd"><label>Categoria</label><select id="p_ct"><option value="">Selecione...</option></select></div>'
+  + '<button class="btn btn-o" onclick="sv(\'cp\')">Salvar Conta a Pagar</button></div>'
+
+  // Toast
+  + '<div class="tst" id="tst"></div>'
+
+  // Bottom Nav
+  + '<div class="bnav">'
+  + '<div class="ni on" onclick="scrollTo(0,0)"><span class="ni-ic">\ud83d\udcca</span>Dashboard</div>'
+  + '<div class="ni" onclick="sw(document.querySelectorAll(\'.tab\')[0],\'despesa\');'
+  + 'document.querySelector(\'.tabs\').scrollIntoView({behavior:\'smooth\'})">'
+  + '<span class="ni-ic">\u2795</span>Lan\u00e7ar</div>'
+  + '<div class="ni" onclick="location.reload()"><span class="ni-ic">\ud83d\udd04</span>Atualizar</div></div>';
+
+  // ════════════ JAVASCRIPT ════════════
+  var js = ''
+  // Data no header
+  + 'var ms=["Janeiro","Fevereiro","Mar\u00e7o","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];'
+  + 'var hj=new Date();document.getElementById("hdrDate").textContent=ms[hj.getMonth()]+"/"+hj.getFullYear();'
+
+  // Setar datas de hoje
+  + 'var iso=hj.toISOString().split("T")[0];'
+  + '["d_dt","r_dt","c_dt","p_dt"].forEach(function(id){var e=document.getElementById(id);if(e)e.value=iso;});'
+
+  // Carregar dados
+  + 'google.script.run.withSuccessHandler(function(r){'
+  + 'try{var d=JSON.parse(r);if(d.erro){tt("Erro: "+d.erro,"err");return;}'
+  + 'if(d.cadastros){'
+  + 'ps(["d_bk","r_bk","p_bk"],d.cadastros.bancos);'
+  + 'ps(["d_ct","r_ct","c_ct","p_ct"],d.cadastros.categorias);'
+  + 'ps(["c_cr"],d.cadastros.cartoes);}'
+  + 'if(d.kpis){rk(d.kpis);}'
+  + 'if(d.alertas)ra(d.alertas.alertas);'
+  + '}catch(e){tt("Erro: "+e.message,"err");}'
+  + '}).withFailureHandler(function(e){tt(e.message,"err");}).webCarregarDados();'
+
+  // Populate selects
+  + 'function ps(ids,items){ids.forEach(function(id){var s=document.getElementById(id);'
+  + 'if(!s||!items)return;items.forEach(function(i){var o=document.createElement("option");'
+  + 'o.value=i;o.textContent=i;s.appendChild(o);});});}'
+
+  // Render KPIs
+  + 'function rk(data){'
+  + 'var k=data.kpis||data;'
+  + 'document.getElementById("kR").textContent=fm(k.receitas);'
+  + 'document.getElementById("kD").textContent=fm(k.despesas);'
+  + 'document.getElementById("kP").textContent=(k.qtdPago||0)+"/"+(k.qtdTotal||0);'
+  + 'var saldo=(k.receitas||0)-(k.despesas||0);'
+  + 'var el=document.getElementById("kS");el.textContent=fm(saldo);'
+  + 'el.className="v "+(saldo>=0?"grn":"red");'
+  + 'if(data.credito)document.getElementById("kF").textContent=fm(data.credito.totalFatura||0);'
+  + 'if(data.crise){'
+  + 'var c=data.crise;'
+  + 'document.getElementById("crD").textContent=fm(c.totalDivida);'
+  + 'document.getElementById("crPg").textContent=fm(c.totalPago);'
+  + 'document.getElementById("crSl").textContent=fm(c.totalSaldo);'
+  + 'document.getElementById("crP").textContent=(c.pctQuitado||0)+"%";'
+  + 'document.getElementById("crAt").textContent=c.qtdAtrasado||0;'
+  + 'document.getElementById("crBar").style.width=(c.pctQuitado||0)+"%";}}'
+
+  // Render Alertas
+  + 'function ra(a){var el=document.getElementById("alBox");'
+  + 'if(!a||!a.length){el.innerHTML="<div class=\\"al-ok\\">\\u2705 Sem contas vencendo</div>";return;}'
+  + 'var h="";a.forEach(function(al){'
+  + 'var bc=al.tipo==="vencido"?"bg-ven":(al.tipo==="hoje"?"bg-hoj":"bg-prx");'
+  + 'var bt=al.tipo==="vencido"?(Math.abs(al.dias)+"d atr\\u00e1s"):(al.tipo==="hoje"?"HOJE":("em "+al.dias+"d"));'
+  + 'h+="<div class=\\"al-it\\"><div><div class=\\"al-desc\\">"+al.desc+"</div>"'
+  + '+"<div class=\\"al-meta\\">"+al.venc+" \\u00b7 "+al.valor+"</div></div>"'
+  + '+"<span class=\\"al-badge "+bc+"\\">"+bt+"</span></div>";});'
+  + 'el.innerHTML=h;}'
+
+  // Format money
+  + 'function fm(v){v=parseFloat(v)||0;var s=v.toFixed(2).split(".");'
+  + 's[0]=s[0].replace(/\\B(?=(\\d{3})+(?!\\d))/g,".");return "R$ "+s[0]+","+s[1];}'
+
+  // Switch tabs
+  + 'function sw(el,tab){'
+  + 'document.querySelectorAll(".fm").forEach(function(f){f.classList.remove("on");});'
+  + 'document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});'
+  + 'document.getElementById("f_"+tab).classList.add("on");'
+  + 'el.classList.add("on");}'
+
+  // Save
+  + 'function sv(tipo){'
+  + 'var d={};'
+  + 'if(tipo==="despesa")d={aba:"lancamento",data:gv("d_dt"),vencimento:gv("d_vc"),'
+  + 'descricao:gv("d_ds"),valor:gv("d_vl"),parcela:gv("d_pc"),banco:gv("d_bk"),'
+  + 'categoria:gv("d_ct"),tipo:"Sa\\u00edda",status:"\\ud83d\\udd35 Em aberto"};'
+  + 'else if(tipo==="receita")d={aba:"lancamento",data:gv("r_dt"),vencimento:gv("r_vc"),'
+  + 'descricao:gv("r_ds"),valor:gv("r_vl"),parcela:gv("r_pc"),banco:gv("r_bk"),'
+  + 'categoria:gv("r_ct"),tipo:"Entrada",status:"\\u2705 Pago"};'
+  + 'else if(tipo==="cartao")d={aba:"credito",data:gv("c_dt"),cartao:gv("c_cr"),'
+  + 'descricao:gv("c_ds"),categoria:gv("c_ct"),valor:gv("c_vl"),parcelas:gv("c_pc")};'
+  + 'else if(tipo==="cp")d={aba:"contapagar",data:gv("p_dt"),vencimento:gv("p_vc"),'
+  + 'descricao:gv("p_ds"),valor:gv("p_vl"),parcelas:gv("p_pc"),banco:gv("p_bk"),'
+  + 'conta:gv("p_co"),categoria:gv("p_ct"),tipo:"Sa\\u00edda",status:"\\ud83d\\udd35 Em aberto"};'
+  + 'if(!d.descricao){tt("Preencha a descri\\u00e7\\u00e3o!","err");return;}'
+  + 'if(!d.valor&&tipo!=="cartao"){tt("Preencha o valor!","err");return;}'
+  + 'google.script.run.withSuccessHandler(function(r){'
+  + 'var p=(r||"").split("|");tt(p[1]||r,p[0]==="OK"?"ok":"err");'
+  + 'if(p[0]==="OK"){lp(tipo);rl();}'
+  + '}).withFailureHandler(function(e){tt(e.message,"err");}).webSalvarLanc(JSON.stringify(d));}'
+
+  + 'function gv(id){var e=document.getElementById(id);return e?e.value:"";}'
+
+  // Limpar campos
+  + 'function lp(t){var m={despesa:["d_ds","d_vl"],receita:["r_ds","r_vl"],'
+  + 'cartao:["c_ds","c_vl"],cp:["p_ds","p_vl","p_co"]};'
+  + '(m[t]||[]).forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});}'
+
+  // Recarregar KPIs
+  + 'function rl(){google.script.run.withSuccessHandler(function(r){'
+  + 'try{rk(JSON.parse(r));}catch(e){}}).webResumoMensal();}'
+
+  // Toast
+  + 'function tt(msg,cls){var t=document.getElementById("tst");t.textContent=msg;'
+  + 't.className="tst "+cls+" show";setTimeout(function(){t.className="tst";},3500);}';
+
+  return '<!DOCTYPE html><html lang="pt-BR"><head>'
+  + '<meta charset="UTF-8">'
+  + '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">'
+  + '<meta name="apple-mobile-web-app-capable" content="yes">'
+  + '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
+  + '<meta name="theme-color" content="#0a0e17">'
+  + '<title>FinControl 360</title>'
+  + '<style>' + css + '</style></head><body>'
+  + html
+  + '<script>' + js + '</script></body></html>';
+}
