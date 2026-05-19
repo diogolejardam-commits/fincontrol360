@@ -1,0 +1,200 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2870
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="pt-BR">\
+<head>\
+<meta charset="UTF-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">\
+<title>FinControl 360\'b0</title>\
+\
+<!-- PWA / iOS Add to Home Screen -->\
+<link rel="manifest" href="manifest.json">\
+<meta name="theme-color" content="#0b1220">\
+<meta name="apple-mobile-web-app-capable" content="yes">\
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\
+<meta name="apple-mobile-web-app-title" content="FinControl">\
+<meta name="mobile-web-app-capable" content="yes">\
+\
+<!-- \'cdcones iOS -->\
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">\
+<link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167.png">\
+<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152.png">\
+\
+<!-- \'cdcones Android / Chrome -->\
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">\
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">\
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">\
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">\
+<link rel="shortcut icon" href="favicon-32.png">\
+\
+<style>\
+  * \{ margin: 0; padding: 0; box-sizing: border-box; \}\
+  html, body \{\
+    height: 100%;\
+    width: 100%;\
+    background: #0b1220;\
+    color: #e6ecf5;\
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;\
+    -webkit-font-smoothing: antialiased;\
+    overflow: hidden;\
+  \}\
+  .container \{\
+    height: 100%;\
+    display: flex;\
+    flex-direction: column;\
+    align-items: center;\
+    justify-content: center;\
+    padding: 20px;\
+    padding-top: env(safe-area-inset-top);\
+    padding-bottom: env(safe-area-inset-bottom);\
+  \}\
+  .logo \{\
+    width: 96px;\
+    height: 96px;\
+    border-radius: 22px;\
+    margin-bottom: 24px;\
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);\
+    animation: pulse 2s ease-in-out infinite;\
+  \}\
+  @keyframes pulse \{\
+    0%, 100% \{ transform: scale(1); \}\
+    50% \{ transform: scale(1.05); \}\
+  \}\
+  h1 \{\
+    font-size: 24px;\
+    font-weight: 700;\
+    margin-bottom: 8px;\
+    letter-spacing: -0.5px;\
+  \}\
+  p \{\
+    font-size: 14px;\
+    color: #7d8aa3;\
+    margin-bottom: 32px;\
+    text-align: center;\
+    max-width: 280px;\
+    line-height: 1.5;\
+  \}\
+  .spinner \{\
+    width: 32px;\
+    height: 32px;\
+    border: 3px solid rgba(255,255,255,0.1);\
+    border-top-color: #10b981;\
+    border-radius: 50%;\
+    animation: spin 0.8s linear infinite;\
+    margin-bottom: 24px;\
+  \}\
+  @keyframes spin \{\
+    to \{ transform: rotate(360deg); \}\
+  \}\
+  .btn \{\
+    display: inline-block;\
+    padding: 14px 32px;\
+    background: #10b981;\
+    color: white;\
+    text-decoration: none;\
+    font-size: 15px;\
+    font-weight: 600;\
+    border-radius: 12px;\
+    border: none;\
+    cursor: pointer;\
+    transition: background 0.2s;\
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);\
+    -webkit-tap-highlight-color: transparent;\
+  \}\
+  .btn:hover, .btn:active \{\
+    background: #0e9f6e;\
+  \}\
+  .install-hint \{\
+    position: fixed;\
+    bottom: 0;\
+    left: 0;\
+    right: 0;\
+    padding: 16px;\
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));\
+    background: rgba(16, 185, 129, 0.1);\
+    border-top: 1px solid rgba(16, 185, 129, 0.2);\
+    text-align: center;\
+    font-size: 12px;\
+    color: #c5cce0;\
+    display: none;\
+  \}\
+  .install-hint.show \{ display: block; \}\
+  .install-hint b \{ color: #10b981; \}\
+</style>\
+</head>\
+<body>\
+\
+<div class="container">\
+  <img src="apple-touch-icon.png" alt="FinControl" class="logo">\
+  <h1>FinControl 360\'b0</h1>\
+  <p>Carregando seu sistema financeiro...</p>\
+  <div class="spinner"></div>\
+  <a href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec" class="btn" id="abrir">Abrir Sistema</a>\
+</div>\
+\
+<div class="install-hint" id="hintIOS">\
+  Toque em <b>\uc0\u11014 \u65039  Compartilhar</b> e depois em <b>"Adicionar \'e0 Tela de In\'edcio"</b> para instalar como app\
+</div>\
+\
+<script>\
+  var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec";\
+  \
+  // Detecta se j\'e1 est\'e1 instalado como PWA (standalone)\
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches \
+                  || window.navigator.standalone === true;\
+  \
+  // Detecta iOS\
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;\
+  \
+  if (isStandalone) \{\
+    // Instalado como app \uc0\u8594  redireciona direto pro sistema\
+    window.location.replace(WEB_APP_URL);\
+  \} else \{\
+    // No navegador \uc0\u8594  mostra tela de boas-vindas, redireciona ap\'f3s 2 segundos\
+    setTimeout(function() \{\
+      window.location.href = WEB_APP_URL;\
+    \}, 2000);\
+    \
+    // Mostra dica iOS pra adicionar \'e0 tela inicial\
+    if (isIOS) \{\
+      setTimeout(function() \{\
+        var hint = document.getElementById('hintIOS');\
+        if (hint) hint.classList.add('show');\
+      \}, 800);\
+    \}\
+  \}\
+</script>\
+\
+</body>\
+</html>\
+\{\
+  "name": "FinControl 360",\
+  "short_name": "FinControl",\
+  "description": "Sistema de gest\'e3o financeira pessoal e empresarial",\
+  "start_url": "./app.html",\
+  "scope": "./",\
+  "display": "standalone",\
+  "orientation": "portrait",\
+  "background_color": "#0b1220",\
+  "theme_color": "#0b1220",\
+  "lang": "pt-BR",\
+  "icons": [\
+    \{\
+      "src": "icon-192.png",\
+      "sizes": "192x192",\
+      "type": "image/png",\
+      "purpose": "any maskable"\
+    \},\
+    \{\
+      "src": "icon-512.png",\
+      "sizes": "512x512",\
+      "type": "image/png",\
+      "purpose": "any maskable"\
+    \}\
+  ]\
+\}}
