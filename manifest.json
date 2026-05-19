@@ -1,9 +1,8 @@
 {
-  "id": "./app.html?v=20260519",
-  "name": "FinControl 360 Pro°",
-  "short_name": "FinControl 360 Pro°",
-  "description": "Atalho do FinControl 360 Pro° para abertura rapida no celular.",
-  "start_url": "./app.html?v=20260519",
+  "name": "FC360 Pro",
+  "short_name": "FC360 Pro",
+  "description": "Sistema de gestão financeira pessoal e empresarial",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
