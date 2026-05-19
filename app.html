@@ -1,409 +1,167 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0a0e17">
-  <meta name="description" content="FinControl 360 — Gestão Financeira Pessoal">
-  <title>FinControl 360</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0e17;
-      --card: #111827;
-      --border: #1e2a3a;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --green: #22c55e;
-      --green-dim: rgba(34,197,94,.12);
-      --red: #ef4444;
-      --red-dim: rgba(239,68,68,.12);
-      --blue: #3b82f6;
-      --blue-dim: rgba(59,130,246,.12);
-      --amber: #f59e0b;
-      --amber-dim: rgba(245,158,11,.12);
-      --accent: #22c55e;
-      --radius: 16px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; overflow-x: hidden; }
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>FinControl 360°</title>
 
-    /* ── Splash Screen ── */
-    .splash {
-      position: fixed; inset: 0; z-index: 1000;
-      background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity .6s ease, visibility .6s;
-    }
-    .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-logo {
-      width: 80px; height: 80px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 800; color: #fff;
-      box-shadow: 0 0 60px rgba(34,197,94,.3);
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 30px rgba(34,197,94,.2); }
-      50% { box-shadow: 0 0 60px rgba(34,197,94,.4); }
-    }
-    .splash h1 {
-      margin-top: 20px;
-      font-size: 28px; font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #e2e8f0 30%, #22c55e 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .splash p { color: var(--muted); font-size: 13px; margin-top: 6px; }
-    .loader {
-      margin-top: 40px;
-      width: 180px; height: 3px;
-      background: var(--border); border-radius: 3px; overflow: hidden;
-    }
-    .loader-bar {
-      width: 0; height: 100%;
-      background: linear-gradient(90deg, #22c55e, #3b82f6);
-      border-radius: 3px;
-      animation: load 2.5s ease-in-out forwards;
-    }
-    @keyframes load { to { width: 100%; } }
+<!-- PWA / iOS Add to Home Screen -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FinControl">
+<meta name="mobile-web-app-capable" content="yes">
 
-    /* ── Header ── */
-    .header {
-      background: rgba(17,24,39,.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .header-brand {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .header-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 14px; color: #fff;
-    }
-    .header-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
-    .header-title span { color: var(--green); }
-    .header-date { font-size: 11px; color: var(--muted); }
+<!-- Ícones iOS -->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152.png">
 
-    /* ── Content ── */
-    .content { padding: 16px; padding-bottom: 100px; }
+<!-- Ícones Android / Chrome -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="shortcut icon" href="favicon-32.png">
 
-    /* ── KPI Cards ── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .kpi {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-    .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-    .kpi-value { font-size: 20px; font-weight: 800; margin-top: 4px; letter-spacing: -0.5px; }
-    .kpi-full { grid-column: 1 / -1; text-align: center; padding: 18px; }
-    .kpi-full .kpi-value { font-size: 28px; }
-
-    .green { color: var(--green); }
-    .red { color: var(--red); }
-    .blue { color: var(--blue); }
-    .amber { color: var(--amber); }
-
-    /* ── Section ── */
-    .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    .section-header {
-      padding: 14px 16px 10px;
-      font-size: 13px; font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* ── Alertas ── */
-    .alert-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px;
-      border-top: 1px solid var(--border);
-    }
-    .alert-left { flex: 1; }
-    .alert-desc { font-size: 13px; font-weight: 600; }
-    .alert-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .alert-badge {
-      font-size: 11px; font-weight: 700;
-      padding: 4px 10px; border-radius: 20px;
-      white-space: nowrap;
-    }
-    .badge-vencido { background: var(--red-dim); color: var(--red); }
-    .badge-hoje { background: var(--amber-dim); color: var(--amber); }
-    .badge-proximo { background: var(--blue-dim); color: var(--blue); }
-
-    /* ── Progress Bar ── */
-    .progress-track {
-      height: 6px; background: var(--border);
-      border-radius: 3px; margin: 8px 16px 14px; overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, #22c55e, #3b82f6);
-      transition: width .6s ease;
-    }
-
-    /* ── Bottom Nav ── */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(17,24,39,.97);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border);
-      display: flex;
-      padding: 8px 0;
-      padding-bottom: max(8px, env(safe-area-inset-bottom));
-      z-index: 100;
-    }
-    .nav-item {
-      flex: 1;
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      padding: 6px 0;
-      font-size: 10px; font-weight: 600; color: var(--muted);
-      cursor: pointer; transition: .2s;
-      text-decoration: none;
-    }
-    .nav-item.active, .nav-item:hover { color: var(--green); }
-    .nav-icon { font-size: 20px; }
-
-    /* ── CTA Button ── */
-    .cta-btn {
-      display: block; width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff; font-size: 15px; font-weight: 700;
-      border: none; border-radius: 12px;
-      cursor: pointer;
-      text-align: center; text-decoration: none;
-      box-shadow: 0 4px 20px rgba(34,197,94,.3);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .cta-btn:active { transform: scale(.97); box-shadow: 0 2px 10px rgba(34,197,94,.2); }
-
-    /* ── Status ── */
-    .status-msg {
-      text-align: center; padding: 40px 16px;
-      color: var(--muted); font-size: 13px;
-    }
-    .status-msg .icon { font-size: 40px; margin-bottom: 12px; }
-
-    /* ── Animations ── */
-    .fade-in { animation: fadeIn .5s ease both; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-    .stagger-1 { animation-delay: .1s; }
-    .stagger-2 { animation-delay: .2s; }
-    .stagger-3 { animation-delay: .3s; }
-    .stagger-4 { animation-delay: .4s; }
-  </style>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    width: 100%;
+    background: #0b1220;
+    color: #e6ecf5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .logo {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  p {
+    font-size: 14px;
+    color: #7d8aa3;
+    margin-bottom: 32px;
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.5;
+  }
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 24px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #10b981;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:hover, .btn:active {
+    background: #0e9f6e;
+  }
+  .install-hint {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    background: rgba(16, 185, 129, 0.1);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
+    text-align: center;
+    font-size: 12px;
+    color: #c5cce0;
+    display: none;
+  }
+  .install-hint.show { display: block; }
+  .install-hint b { color: #10b981; }
+</style>
 </head>
 <body>
 
-  <!-- Splash Screen -->
-  <div class="splash" id="splash">
-    <div class="splash-logo">FC</div>
-    <h1>FinControl 360</h1>
-    <p>Gestão Financeira Pessoal</p>
-    <div class="loader"><div class="loader-bar"></div></div>
-  </div>
+<div class="container">
+  <img src="apple-touch-icon.png" alt="FinControl" class="logo">
+  <h1>FinControl 360°</h1>
+  <p>Carregando seu sistema financeiro...</p>
+  <div class="spinner"></div>
+  <a href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec" class="btn" id="abrir">Abrir Sistema</a>
+</div>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-brand">
-      <div class="header-icon">FC</div>
-      <div>
-        <div class="header-title">Fin<span>Control</span> 360</div>
-        <div class="header-date" id="headerDate"></div>
-      </div>
-    </div>
-  </div>
+<div class="install-hint" id="hintIOS">
+  Toque em <b>⬆️ Compartilhar</b> e depois em <b>"Adicionar à Tela de Início"</b> para instalar como app
+</div>
 
-  <!-- Content -->
-  <div class="content" id="content">
-
-    <!-- KPIs -->
-    <div class="kpi-grid fade-in stagger-1">
-      <div class="kpi">
-        <div class="kpi-label">Receitas</div>
-        <div class="kpi-value green" id="kpiReceitas">R$ 0,00</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Despesas</div>
-        <div class="kpi-value red" id="kpiDespesas">R$ 0,00</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Fatura CC</div>
-        <div class="kpi-value amber" id="kpiFatura">R$ 0,00</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Pagos</div>
-        <div class="kpi-value blue" id="kpiPagos">0/0</div>
-      </div>
-      <div class="kpi kpi-full">
-        <div class="kpi-label">Saldo Líquido</div>
-        <div class="kpi-value" id="kpiSaldo">R$ 0,00</div>
-      </div>
-    </div>
-
-    <!-- Alertas -->
-    <div class="section fade-in stagger-2">
-      <div class="section-header">⚡ Contas Próximas</div>
-      <div id="alertas">
-        <div class="status-msg">
-          <div class="icon">✅</div>
-          Nenhuma conta vencendo nos próximos 7 dias
-        </div>
-      </div>
-    </div>
-
-    <!-- Crise -->
-    <div class="section fade-in stagger-3">
-      <div class="section-header">⚠️ Gestão de Crise</div>
-      <div style="padding:14px 16px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-          <div>
-            <div class="kpi-label">Dívida Total</div>
-            <div style="font-size:18px;font-weight:800;color:var(--red)" id="criseDivida">R$ 0,00</div>
-          </div>
-          <div style="text-align:right">
-            <div class="kpi-label">Progresso</div>
-            <div style="font-size:18px;font-weight:800;color:var(--green)" id="crisePct">0%</div>
-          </div>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="criseBar" style="width:0%"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)">
-          <span>Pago: <strong class="green" id="crisePago">R$ 0</strong></span>
-          <span>Saldo: <strong class="amber" id="criseSaldo">R$ 0</strong></span>
-          <span>Atrasadas: <strong class="red" id="criseAtrasado">0</strong></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA -->
-    <a class="cta-btn fade-in stagger-4" id="ctaBtn"
-       href="https://script.google.com/macros/s/AKfycbxN8k3wkgS39rvaTA0Oz413IRrS4sdhJApSkLrSQnCBuljRCU2EgFoPvScHNptQIk_rbA/exec"
-       target="_blank">
-      Abrir App Completo →
-    </a>
-
-  </div>
-
-  <!-- Bottom Nav -->
-  <div class="bottom-nav">
-    <a class="nav-item active" href="#">
-      <span class="nav-icon">📊</span>Dashboard
-    </a>
-    <a class="nav-item" href="https://script.google.com/macros/s/AKfycbxN8k3wkgS39rvaTA0Oz413IRrS4sdhJApSkLrSQnCBuljRCU2EgFoPvScHNptQIk_rbA/exec" target="_blank">
-      <span class="nav-icon">➕</span>Lançar
-    </a>
-    <a class="nav-item" href="https://docs.google.com/spreadsheets/d/1gLT93M40c0Ki-lJK79cCrUmpn9W8vI3lVB1S478ME9k/edit" target="_blank">
-      <span class="nav-icon">📋</span>Planilha
-    </a>
-  </div>
-
-  <script>
-    // ── Splash ──
-    setTimeout(function() { document.getElementById('splash').classList.add('hide'); }, 2800);
-
-    // ── Data no header ──
-    var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    var d = new Date();
-    document.getElementById('headerDate').textContent = meses[d.getMonth()] + '/' + d.getFullYear();
-
-    // ── Carregar dados via Apps Script ──
-    var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxN8k3wkgS39rvaTA0Oz413IRrS4sdhJApSkLrSQnCBuljRCU2EgFoPvScHNptQIk_rbA/exec';
-
-    function fmtMoeda(v) {
-      v = parseFloat(v) || 0;
-      var s = v.toFixed(2).split('.');
-      s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      return 'R$ ' + s[0] + ',' + s[1];
+<script>
+  var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec";
+  
+  // Detecta se já está instalado como PWA (standalone)
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                  || window.navigator.standalone === true;
+  
+  // Detecta iOS
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  
+  if (isStandalone) {
+    // Instalado como app → redireciona direto pro sistema
+    window.location.replace(WEB_APP_URL);
+  } else {
+    // No navegador → mostra tela de boas-vindas, redireciona após 2 segundos
+    setTimeout(function() {
+      window.location.href = WEB_APP_URL;
+    }, 2000);
+    
+    // Mostra dica iOS pra adicionar à tela inicial
+    if (isIOS) {
+      setTimeout(function() {
+        var hint = document.getElementById('hintIOS');
+        if (hint) hint.classList.add('show');
+      }, 800);
     }
+  }
+</script>
 
-    function carregarDados() {
-      fetch(WEB_APP_URL + '?action=resumo')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.kpis) {
-            var k = data.kpis.kpis || data.kpis;
-            document.getElementById('kpiReceitas').textContent = fmtMoeda(k.receitas);
-            document.getElementById('kpiDespesas').textContent = fmtMoeda(k.despesas);
-            document.getElementById('kpiPagos').textContent = (k.qtdPago || 0) + '/' + (k.qtdTotal || 0);
-            var saldo = (k.receitas || 0) - (k.despesas || 0);
-            var el = document.getElementById('kpiSaldo');
-            el.textContent = fmtMoeda(saldo);
-            el.className = 'kpi-value ' + (saldo >= 0 ? 'green' : 'red');
-
-            if (data.kpis.credito) {
-              document.getElementById('kpiFatura').textContent = fmtMoeda(data.kpis.credito.totalFatura || 0);
-            }
-
-            if (data.kpis.crise) {
-              var c = data.kpis.crise;
-              document.getElementById('criseDivida').textContent = fmtMoeda(c.totalDivida);
-              document.getElementById('crisePago').textContent = fmtMoeda(c.totalPago);
-              document.getElementById('criseSaldo').textContent = fmtMoeda(c.totalSaldo);
-              document.getElementById('crisePct').textContent = (c.pctQuitado || 0) + '%';
-              document.getElementById('criseAtrasado').textContent = c.qtdAtrasado || 0;
-              document.getElementById('criseBar').style.width = (c.pctQuitado || 0) + '%';
-            }
-          }
-
-          if (data.alertas && data.alertas.alertas && data.alertas.alertas.length > 0) {
-            var html = '';
-            data.alertas.alertas.forEach(function(a) {
-              var badgeClass = a.tipo === 'vencido' ? 'badge-vencido' : (a.tipo === 'hoje' ? 'badge-hoje' : 'badge-proximo');
-              var badgeText = a.tipo === 'vencido' ? (Math.abs(a.dias) + 'd atrás') : (a.tipo === 'hoje' ? 'HOJE' : ('em ' + a.dias + 'd'));
-              html += '<div class="alert-item">';
-              html += '<div class="alert-left"><div class="alert-desc">' + a.desc + '</div>';
-              html += '<div class="alert-meta">' + a.venc + ' · ' + a.valor + '</div></div>';
-              html += '<span class="alert-badge ' + badgeClass + '">' + badgeText + '</span>';
-              html += '</div>';
-            });
-            document.getElementById('alertas').innerHTML = html;
-          }
-        })
-        .catch(function(err) {
-          console.log('Erro ao carregar dados:', err);
-        });
-    }
-
-    // Carregar após splash
-    setTimeout(carregarDados, 1500);
-  </script>
 </body>
 </html>
