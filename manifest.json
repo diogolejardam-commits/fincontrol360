@@ -1,6 +1,6 @@
 {
-  "name": "FinControl 360",
-  "short_name": "FinControl",
+  "name": "FC360 Pro",
+  "short_name": "FC360 Pro",
   "description": "Sistema de gestão financeira pessoal e empresarial",
   "start_url": "./app.html",
   "scope": "./",
