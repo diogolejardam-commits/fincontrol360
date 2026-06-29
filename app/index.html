@@ -65,6 +65,23 @@
       font-size: 15px;
       line-height: 1.55;
     }
+    .fc-install-hint {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      color: #e2e8f0;
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: left;
+    }
+    .fc-btn-hint {
+      margin-top: 10px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.45;
+    }
     .fc-loader-spinner {
       width: 22px;
       height: 22px;
@@ -74,6 +91,7 @@
       border-radius: 50%;
       animation: fc-spin 0.9s linear infinite;
     }
+    .fc-loader-spinner.is-hidden { display: none; }
     .fc-open-btn {
       display: none;
       align-items: center;
@@ -106,9 +124,13 @@
       height="88"
     >
     <h1>FinControl 360</h1>
-    <p id="fc-status-text">Abrindo FinControl 360...</p>
-    <div class="fc-loader-spinner" aria-hidden="true"></div>
+    <p id="fc-status-text">Carregando...</p>
+    <div id="fc-spinner" class="fc-loader-spinner is-hidden" aria-hidden="true"></div>
+    <div id="fc-install-hint" class="fc-install-hint" hidden>
+      Para instalar com o ícone correto, toque em <strong>Compartilhar</strong> &gt; <strong>Adicionar à Tela de Início</strong>.
+    </div>
     <a id="fc-open-btn" class="fc-open-btn" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360</a>
+    <p id="fc-btn-hint" class="fc-btn-hint" hidden>Não use este botão antes de adicionar o atalho à Tela de Início.</p>
   </div>
 
   <script>
@@ -118,6 +140,13 @@
       var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
       var openBtn = document.getElementById('fc-open-btn');
       var statusText = document.getElementById('fc-status-text');
+      var spinner = document.getElementById('fc-spinner');
+      var installHint = document.getElementById('fc-install-hint');
+      var btnHint = document.getElementById('fc-btn-hint');
+
+      var isStandalone =
+        window.navigator.standalone === true ||
+        window.matchMedia('(display-mode: standalone)').matches;
 
       function openApp() {
         window.location.replace(APP_URL);
@@ -129,13 +158,18 @@
       });
 
       window.addEventListener('load', function () {
-        window.setTimeout(openApp, 450);
-      });
+        if (isStandalone) {
+          statusText.textContent = 'Abrindo FinControl 360...';
+          spinner.classList.remove('is-hidden');
+          window.setTimeout(openApp, 450);
+          return;
+        }
 
-      window.setTimeout(function () {
-        statusText.textContent = 'Se não abrir automaticamente, toque no botão abaixo.';
+        statusText.textContent = 'FinControl 360 — atalho para iPhone';
+        installHint.hidden = false;
         openBtn.classList.add('is-visible');
-      }, 3500);
+        btnHint.hidden = false;
+      });
     })();
   </script>
 </body>
