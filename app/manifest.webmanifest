@@ -1,7 +1,7 @@
 {
-  "name": "FinControl 360 Pro",
-  "short_name": "FinControl",
-  "description": "FinControl 360 Pro — atalho PWA com ícone oficial para iPhone.",
+  "name": "FinControl 360",
+  "short_name": "FinControl 360",
+  "description": "FinControl 360 — atalho PWA com ícone oficial para iPhone.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
