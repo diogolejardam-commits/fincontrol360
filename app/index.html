@@ -24,35 +24,22 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      min-height: 100dvh;
       overflow: hidden;
       background: radial-gradient(ellipse at center, #0a1428 0%, #060912 70%, #04060d 100%);
       color: #f8fafc;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-    #fc-app-frame {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      border: 0;
-      background: #0a1428;
-    }
-    #fc-fallback {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 20;
+    body {
+      display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
       padding-top: max(24px, env(safe-area-inset-top));
       padding-bottom: max(24px, env(safe-area-inset-bottom));
-      background: radial-gradient(ellipse at center, #0a1428 0%, #060912 70%, #04060d 100%);
     }
-    #fc-fallback.is-visible { display: flex; }
-    .fc-fallback-card {
+    .fc-loader-card {
       width: min(100%, 380px);
       text-align: center;
       padding: 28px 22px;
@@ -61,25 +48,34 @@
       background: rgba(10, 20, 40, 0.92);
       box-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
     }
-    .fc-fallback-logo {
+    .fc-loader-logo {
       width: 88px;
       height: 88px;
       border-radius: 20px;
       margin-bottom: 18px;
     }
-    .fc-fallback-card h1 {
+    .fc-loader-card h1 {
       margin: 0 0 10px;
       font-size: 22px;
       font-weight: 700;
     }
-    .fc-fallback-card p {
+    .fc-loader-card p {
       margin: 0;
       color: #cbd5e1;
       font-size: 15px;
       line-height: 1.55;
     }
-    .fc-fallback-btn {
-      display: inline-flex;
+    .fc-loader-spinner {
+      width: 22px;
+      height: 22px;
+      margin: 18px auto 0;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-top-color: #4ade80;
+      border-radius: 50%;
+      animation: fc-spin 0.9s linear infinite;
+    }
+    .fc-open-btn {
+      display: none;
       align-items: center;
       justify-content: center;
       width: 100%;
@@ -94,75 +90,52 @@
       text-decoration: none;
       cursor: pointer;
     }
+    .fc-open-btn.is-visible { display: inline-flex; }
+    @keyframes fc-spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <iframe
-    id="fc-app-frame"
-    src="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec"
-    title="FinControl 360 Pro"
-    allow="fullscreen; clipboard-read; clipboard-write"
-    referrerpolicy="no-referrer-when-downgrade"
-  ></iframe>
-
-  <div id="fc-fallback" role="alert" aria-live="polite">
-    <div class="fc-fallback-card">
-      <img
-        class="fc-fallback-logo"
-        src="https://diogolejardam-commits.github.io/fincontrol360/apple-touch-icon.png"
-        alt="FinControl 360 Pro"
-        width="88"
-        height="88"
-      >
-      <h1>FinControl 360 Pro</h1>
-      <p id="fc-fallback-text">Não foi possível carregar o sistema dentro desta janela. Toque abaixo para abrir o link oficial.</p>
-      <a id="fc-fallback-btn" class="fc-fallback-btn" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360 Pro</a>
-    </div>
+  <div class="fc-loader-card" role="status" aria-live="polite">
+    <img
+      class="fc-loader-logo"
+      src="https://diogolejardam-commits.github.io/fincontrol360/apple-touch-icon.png"
+      alt="FinControl 360"
+      width="88"
+      height="88"
+    >
+    <h1>FinControl 360</h1>
+    <p id="fc-status-text">Abrindo FinControl 360...</p>
+    <div class="fc-loader-spinner" aria-hidden="true"></div>
+    <a id="fc-open-btn" class="fc-open-btn" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360</a>
   </div>
 
   <script>
     (function () {
       'use strict';
 
-      var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
-      var frame = document.getElementById('fc-app-frame');
-      var fallback = document.getElementById('fc-fallback');
-      var fallbackText = document.getElementById('fc-fallback-text');
-      var fallbackBtn = document.getElementById('fc-fallback-btn');
-      var iframeFailed = false;
+      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var openBtn = document.getElementById('fc-open-btn');
+      var statusText = document.getElementById('fc-status-text');
 
-      function showFallback(message) {
-        if (iframeFailed) return;
-        iframeFailed = true;
-        if (message) fallbackText.textContent = message;
-        frame.style.display = 'none';
-        fallback.classList.add('is-visible');
+      function openApp() {
+        window.location.replace(APP_URL);
       }
 
-      function openOfficialTopLevel() {
-        window.location.replace(WEB_APP_URL);
-      }
-
-      frame.addEventListener('error', function () {
-        showFallback('Falha ao carregar o iframe. Toque abaixo para abrir o link oficial.');
-      });
-
-      fallbackBtn.addEventListener('click', function (event) {
+      openBtn.addEventListener('click', function (event) {
         event.preventDefault();
-        openOfficialTopLevel();
+        openApp();
       });
 
-      // Apps Script pode bloquear iframe (X-Frame-Options). Após timeout, oferece abertura direta.
+      window.addEventListener('load', function () {
+        window.setTimeout(openApp, 450);
+      });
+
       window.setTimeout(function () {
-        try {
-          var doc = frame.contentDocument;
-          if (!doc || !doc.body || doc.body.childNodes.length === 0) {
-            showFallback('O Google Apps Script pode bloquear exibição em iframe. Toque abaixo para abrir o link oficial.');
-          }
-        } catch (err) {
-          showFallback('O Google Apps Script bloqueou o iframe nesta página. Toque abaixo para abrir o link oficial.');
-        }
-      }, 4500);
+        statusText.textContent = 'Se não abrir automaticamente, toque no botão abaixo.';
+        openBtn.classList.add('is-visible');
+      }, 3500);
     })();
   </script>
 </body>
