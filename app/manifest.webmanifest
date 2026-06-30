@@ -1,7 +1,7 @@
 {
   "name": "FinControl 360°",
   "short_name": "FinControl",
-  "description": "Atalho oficial FinControl 360° — instalação e acesso no iPhone.",
+  "description": "Atalho FinControl 360° — redireciona para a Central Oficial.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -3,91 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>FinControl 360° — Página oficial de venda</title>
-  <meta name="description" content="A página oficial de venda do FinControl 360° mudou. Você será redirecionado para a oferta atual.">
-  <meta name="robots" content="noindex, follow">
-  <meta name="theme-color" content="#0a1428">
+  <title>FinControl 360° — Central Oficial</title>
+  <meta name="description" content="Central oficial FinControl 360° — compra, acesso e instalação mobile com ativação controlada.">
+  <meta name="theme-color" content="#6A00FF">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta http-equiv="refresh" content="3;url=https://pay.hotmart.com/Q105286190N">
+  <link rel="manifest" href="manifest.webmanifest">
   <style>
+    :root {
+      --gex-black: #0B0B0B;
+      --gex-purple: #6A00FF;
+      --gex-purple-dark: #3D008F;
+      --gex-white: #F5F7FA;
+      --gex-silver: #C0C0C8;
+      --gex-gold: #D4AF37;
+      --gex-muted: rgba(245, 247, 250, 0.55);
+      --gex-border: rgba(212, 175, 55, 0.22);
+      --gex-purple-soft: rgba(106, 0, 255, 0.14);
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
+    html { scroll-behavior: smooth; }
+    body {
       min-height: 100dvh;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(ellipse at center, #0a1428 0%, #060912 70%, #04060d 100%);
-      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #1a0a3d 0%, var(--gex-black) 42%, #050505 100%);
+      color: var(--gex-white);
+      -webkit-font-smoothing: antialiased;
+      padding: 24px 20px;
+      padding-top: calc(28px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+      border: 1px solid var(--gex-border);
+      box-shadow: 0 8px 28px rgba(106, 0, 255, 0.2);
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    h1 .gold { color: var(--gex-gold); }
+    .subtitle {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gex-silver);
+      margin-bottom: 16px;
+    }
+    .lead {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--gex-muted);
+      text-align: left;
+      padding: 0 4px;
+    }
+    .notice {
+      margin: 22px 0 28px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--gex-purple-soft);
+      border: 1px solid rgba(106, 0, 255, 0.35);
+      font-size: 0.8125rem;
+      line-height: 1.55;
+      color: var(--gex-silver);
+      text-align: left;
+    }
+    .notice strong { color: var(--gex-gold); }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      padding-top: calc(24px + env(safe-area-inset-top, 0px));
-      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-    }
-    .card {
       width: 100%;
-      max-width: 420px;
-      text-align: center;
-      padding: 32px 28px;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(15, 23, 42, 0.85);
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
-    }
-    .brand {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin-bottom: 20px;
-      color: #f8fafc;
-    }
-    .brand span {
-      font-weight: 900;
-      color: #cbd5e1;
-    }
-    .msg {
-      font-size: 1rem;
-      line-height: 1.55;
-      color: #94a3b8;
-      margin-bottom: 28px;
-    }
-    .btn {
-      display: inline-block;
-      width: 100%;
-      max-width: 280px;
-      padding: 14px 24px;
-      font-size: 1rem;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 0.9375rem;
       font-weight: 700;
-      color: #0f172a;
-      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-      border: none;
-      border-radius: 10px;
       text-decoration: none;
+      text-align: center;
       cursor: pointer;
+      border: none;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(148, 163, 184, 0.25);
+    .btn:hover { transform: translateY(-1px); }
+    .btn-hotmart {
+      background: linear-gradient(135deg, var(--gex-purple-dark) 0%, var(--gex-purple) 100%);
+      color: var(--gex-white);
+      box-shadow: 0 8px 28px rgba(106, 0, 255, 0.35);
     }
-    .hint {
-      margin-top: 20px;
-      font-size: 0.8125rem;
-      color: #64748b;
+    .btn-hotmart:hover { box-shadow: 0 12px 32px rgba(106, 0, 255, 0.45); }
+    .btn-access {
+      background: rgba(245, 247, 250, 0.08);
+      color: var(--gex-white);
+      border: 1px solid var(--gex-border);
+    }
+    .btn-access:hover {
+      background: rgba(106, 0, 255, 0.12);
+      border-color: rgba(106, 0, 255, 0.4);
+    }
+    .btn-install {
+      background: transparent;
+      color: var(--gex-silver);
+      border: 1px solid rgba(192, 192, 200, 0.25);
+    }
+    .btn-install:hover {
+      color: var(--gex-white);
+      border-color: var(--gex-gold);
+    }
+    #install-section {
+      scroll-margin-top: 16px;
+      margin-top: 8px;
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(11, 11, 11, 0.85);
+      border: 1px solid var(--gex-border);
+      display: none;
+    }
+    #install-section.is-visible { display: block; }
+    #install-section h2 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--gex-gold);
+      margin-bottom: 10px;
+    }
+    #install-section p {
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--gex-silver);
+    }
+    #install-section strong { color: var(--gex-white); }
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 0.6875rem;
+      color: rgba(192, 192, 200, 0.45);
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1 class="brand">FinControl <span>360°</span></h1>
-    <p class="msg">A página oficial de venda mudou.</p>
-    <a class="btn" href="https://pay.hotmart.com/Q105286190N" rel="noopener noreferrer">Ir para a página oficial</a>
-    <p class="hint">Redirecionando automaticamente em 3 segundos…</p>
+  <main class="wrap" role="main">
+    <header class="hero">
+      <img class="logo" src="apple-touch-icon.png" alt="FinControl 360°" width="80" height="80">
+      <h1>FinControl <span class="gold">360°</span></h1>
+      <p class="subtitle">Sistema financeiro online com ativação controlada</p>
+      <p class="lead">Organize lançamentos, contas, boletos, faturas, indicadores e relatórios em um só ambiente. Acesse pelo celular, tablet ou computador.</p>
+    </header>
+
+    <aside class="notice" role="note">
+      <strong>Ativação controlada:</strong> Após a compra, o acesso é liberado por ativação controlada, mediante confirmação da compra e envio dos dados necessários para configuração inicial.
+    </aside>
+
+    <nav class="actions" aria-label="Ações principais">
+      <a class="btn btn-hotmart" href="https://pay.hotmart.com/Q105286190N" rel="noopener noreferrer">Conhecer / Comprar pela Hotmart</a>
+      <a class="btn btn-access" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec" rel="noopener noreferrer">Acessar FinControl 360°</a>
+      <button type="button" class="btn btn-install" id="btn-show-install">Instalar no iPhone</button>
+    </nav>
+
+    <section id="install-section" aria-labelledby="install-title">
+      <h2 id="install-title">Instalação no iPhone</h2>
+      <p>No <strong>Safari</strong> do iPhone, toque em <strong>Compartilhar</strong> &gt; <strong>Adicionar à Tela de Início</strong>.</p>
+    </section>
+
+    <footer class="footer">
+      GEX Solution Tech · FinControl 360° · Central oficial de acesso
+    </footer>
   </main>
   <script>
     (function () {
-      var dest = 'https://pay.hotmart.com/Q105286190N';
-      setTimeout(function () { window.location.replace(dest); }, 3000);
+      var btn = document.getElementById('btn-show-install');
+      var section = document.getElementById('install-section');
+      if (!btn || !section) return;
+      btn.addEventListener('click', function () {
+        section.classList.add('is-visible');
+        section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
     })();
   </script>
 </body>

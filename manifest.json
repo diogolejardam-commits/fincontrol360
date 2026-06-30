@@ -1,13 +1,13 @@
 {
-  "name": "FC360 Pro",
-  "short_name": "FC360 Pro",
-  "description": "Sistema de gestão financeira pessoal e empresarial",
-  "start_url": "./app.html",
+  "name": "FinControl 360°",
+  "short_name": "FinControl",
+  "description": "Central oficial FinControl 360° — acesso e instalação com ativação controlada.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0b1220",
-  "theme_color": "#0b1220",
+  "orientation": "portrait-primary",
+  "background_color": "#0B0B0B",
+  "theme_color": "#6A00FF",
   "lang": "pt-BR",
   "icons": [
     {
