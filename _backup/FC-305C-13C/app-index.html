@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>FinControl 360°</title>
+  <meta name="description" content="Atalho oficial FinControl 360° para instalação e acesso no iPhone.">
+  <meta name="theme-color" content="#6A00FF">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FinControl 360°">
+  <meta name="application-name" content="FinControl 360°">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://diogolejardam-commits.github.io/fincontrol360/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://diogolejardam-commits.github.io/fincontrol360/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="https://diogolejardam-commits.github.io/fincontrol360/icon-512.png">
+  <link rel="shortcut icon" href="https://diogolejardam-commits.github.io/fincontrol360/favicon-32.png">
+  <style>
+    :root {
+      --gex-black: #0B0B0B;
+      --gex-purple: #6A00FF;
+      --gex-purple-dark: #3D008F;
+      --gex-white: #F5F7FA;
+      --gex-silver: #C0C0C8;
+      --gex-gold: #D4AF37;
+      --gex-muted: rgba(245, 247, 250, 0.55);
+      --gex-border: rgba(212, 175, 55, 0.22);
+      --gex-purple-soft: rgba(106, 0, 255, 0.14);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, #1a0a3d 0%, var(--gex-black) 45%, #050505 100%);
+      color: var(--gex-white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+    }
+    .fc-loader-card {
+      width: min(100%, 400px);
+      text-align: center;
+      padding: 32px 24px;
+      border-radius: 18px;
+      border: 1px solid var(--gex-border);
+      background: rgba(11, 11, 11, 0.94);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 40px rgba(106, 0, 255, 0.08);
+    }
+    .fc-loader-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--gex-border);
+      box-shadow: 0 8px 24px rgba(106, 0, 255, 0.15);
+    }
+    .fc-loader-card h1 {
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--gex-white);
+    }
+    .fc-loader-card h1 .fc-gold {
+      color: var(--gex-gold);
+      font-weight: 900;
+    }
+    .fc-subtitle {
+      margin: 0 0 20px;
+      color: var(--gex-silver);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .fc-install-hint {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--gex-purple-soft);
+      border: 1px solid rgba(106, 0, 255, 0.35);
+      color: var(--gex-white);
+      font-size: 0.875rem;
+      line-height: 1.55;
+      text-align: left;
+    }
+    .fc-install-hint strong {
+      color: var(--gex-gold);
+      font-weight: 700;
+    }
+    .fc-open-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 15px 20px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gex-purple-dark) 0%, var(--gex-purple) 100%);
+      color: var(--gex-white);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(106, 0, 255, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fc-open-btn:hover,
+    .fc-open-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 32px rgba(106, 0, 255, 0.45);
+    }
+    .fc-open-btn.is-visible { display: inline-flex; }
+    .fc-warning {
+      margin: 16px 0 0;
+      color: var(--gex-muted);
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+    .fc-status {
+      margin: 0;
+      color: var(--gex-silver);
+      font-size: 0.9375rem;
+    }
+    .fc-loader-spinner {
+      width: 22px;
+      height: 22px;
+      margin: 16px auto 0;
+      border: 2px solid rgba(245, 247, 250, 0.15);
+      border-top-color: var(--gex-purple);
+      border-radius: 50%;
+      animation: fc-spin 0.9s linear infinite;
+    }
+    .fc-loader-spinner.is-hidden { display: none; }
+    @keyframes fc-spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="fc-loader-card" role="status" aria-live="polite">
+    <img
+      class="fc-loader-logo"
+      src="https://diogolejardam-commits.github.io/fincontrol360/apple-touch-icon.png"
+      alt="FinControl 360°"
+      width="88"
+      height="88"
+    >
+    <h1>FinControl <span class="fc-gold">360°</span></h1>
+    <p id="fc-subtitle" class="fc-subtitle">Atalho oficial para acesso no iPhone</p>
+    <p id="fc-status-text" class="fc-status" hidden></p>
+    <div id="fc-install-hint" class="fc-install-hint" hidden>
+      Para instalar com o ícone correto, toque em <strong>Compartilhar</strong> &gt; <strong>Adicionar à Tela de Início</strong>.
+    </div>
+    <a id="fc-open-btn" class="fc-open-btn" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360°</a>
+    <p id="fc-warning" class="fc-warning" hidden>Este atalho é destinado ao acesso do sistema após ativação controlada.</p>
+    <div id="fc-spinner" class="fc-loader-spinner is-hidden" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var openBtn = document.getElementById('fc-open-btn');
+      var statusText = document.getElementById('fc-status-text');
+      var subtitle = document.getElementById('fc-subtitle');
+      var spinner = document.getElementById('fc-spinner');
+      var installHint = document.getElementById('fc-install-hint');
+      var warning = document.getElementById('fc-warning');
+
+      var isStandalone =
+        window.navigator.standalone === true ||
+        window.matchMedia('(display-mode: standalone)').matches;
+
+      function openApp() {
+        window.location.replace(APP_URL);
+      }
+
+      openBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        openApp();
+      });
+
+      window.addEventListener('load', function () {
+        if (isStandalone) {
+          subtitle.hidden = true;
+          installHint.hidden = true;
+          openBtn.classList.remove('is-visible');
+          warning.hidden = true;
+          statusText.hidden = false;
+          statusText.textContent = 'Abrindo FinControl 360°...';
+          spinner.classList.remove('is-hidden');
+          window.setTimeout(openApp, 450);
+          return;
+        }
+
+        installHint.hidden = false;
+        openBtn.classList.add('is-visible');
+        warning.hidden = false;
+      });
+    })();
+  </script>
+</body>
+</html>
