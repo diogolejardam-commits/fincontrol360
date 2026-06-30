@@ -1,13 +1,13 @@
 {
-  "name": "FinControl 360",
-  "short_name": "FinControl 360",
-  "description": "FinControl 360 — atalho PWA com ícone oficial para iPhone.",
+  "name": "FinControl 360°",
+  "short_name": "FinControl",
+  "description": "Atalho oficial FinControl 360° — instalação e acesso no iPhone.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0a1428",
-  "theme_color": "#0a1428",
+  "background_color": "#0B0B0B",
+  "theme_color": "#6A00FF",
   "lang": "pt-BR",
   "icons": [
     {
