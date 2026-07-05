@@ -2,13 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FinControl 360° — Central Oficial</title>
-  <meta name="description" content="Central oficial do FinControl 360° — sistema financeiro online com ativação controlada.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FinControl 360° — Assinatura Mensal</title>
+  <meta name="description" content="Landing comercial FinControl 360° — sistema financeiro online. Assinatura R$ 67/mês, garantia 7 dias Hotmart.">
+  <meta name="theme-color" content="#6A00FF">
+  <link rel="canonical" href="https://diogolejardam-commits.github.io/fincontrol360/">
   <style>
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background: #000;
       color: #fff;
       font-family: Arial, Helvetica, sans-serif;
@@ -16,6 +19,8 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
+      padding-top: calc(24px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
     }
 
     .box {
@@ -43,22 +48,89 @@
 
     h1 {
       margin: 0 0 14px;
-      font-size: 42px;
+      font-size: clamp(28px, 6vw, 42px);
       line-height: 1.1;
     }
 
     .subtitle {
       color: #DADADA;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.55;
-      margin: 0 auto 28px;
+      margin: 0 auto 20px;
       max-width: 660px;
+    }
+
+    .price {
+      margin: 0 auto 22px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      background: rgba(106, 0, 255, 0.12);
+      border: 1px solid rgba(106, 0, 255, 0.35);
+      max-width: 320px;
+    }
+
+    .price-amount {
+      font-size: 36px;
+      font-weight: 800;
+      color: #F5F7FA;
+      line-height: 1.1;
+    }
+
+    .price-amount small {
+      font-size: 16px;
+      font-weight: 600;
+      color: #C0C0C8;
+    }
+
+    .price-label {
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #FFC300;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .benefits {
+      margin: 0 auto 24px;
+      max-width: 560px;
+      text-align: left;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .benefits h2 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFC300;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      text-align: center;
+    }
+
+    .benefits ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #DADADA;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .benefits li {
+      margin-bottom: 8px;
+    }
+
+    .benefits li:last-child {
+      margin-bottom: 0;
     }
 
     .actions {
       display: grid;
       gap: 14px;
-      margin-top: 28px;
+      margin-top: 8px;
     }
 
     a {
@@ -68,35 +140,46 @@
       text-decoration: none;
       font-weight: 800;
       letter-spacing: .3px;
+      font-size: 15px;
     }
 
     .primary {
       background: #6A00FF;
       color: #fff;
+      box-shadow: 0 8px 28px rgba(106, 0, 255, 0.35);
     }
 
     .secondary {
       background: rgba(255,255,255,.08);
       color: #fff;
       border: 1px solid rgba(255,255,255,.18);
+      font-size: 14px;
     }
 
-    .note {
-      margin-top: 24px;
+    .cta-note {
+      margin-top: 10px;
       color: #A9A9A9;
-      font-size: 14px;
-      line-height: 1.55;
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .warning {
-      margin-top: 18px;
+      margin-top: 20px;
       padding: 14px 16px;
       border-radius: 16px;
       background: rgba(255,195,0,.08);
       border: 1px solid rgba(255,195,0,.22);
       color: #F2F2F2;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      line-height: 1.55;
+      text-align: left;
+    }
+
+    .note {
+      margin-top: 22px;
+      color: #A9A9A9;
+      font-size: 13px;
+      line-height: 1.55;
     }
   </style>
 </head>
@@ -107,27 +190,50 @@
     <h1>FinControl 360°</h1>
 
     <p class="subtitle">
-      Central oficial de acesso ao FinControl 360°.
-      Sistema financeiro online para organização de lançamentos, contas, boletos, faturas, indicadores e relatórios.
+      Sistema financeiro online para organizar lançamentos, contas a pagar, boletos, faturas de cartão,
+      indicadores e relatórios — no celular, tablet ou computador.
     </p>
 
-    <div class="actions">
-      <a class="primary" href="https://pay.hotmart.com/Q105286190N">
-        Conhecer o FinControl 360°
-      </a>
-
-      <a class="secondary" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">
-        Acessar sistema — cliente já ativado
-      </a>
+    <div class="price">
+      <div class="price-label">Assinatura mensal</div>
+      <div class="price-amount">R$ 67,00 <small>/mês</small></div>
     </div>
 
+    <section class="benefits" aria-labelledby="product-title">
+      <h2 id="product-title">O que você organiza</h2>
+      <ul>
+        <li>Lançamentos e movimentações financeiras</li>
+        <li>Contas a pagar e contas pagas</li>
+        <li>Boletos e faturas de cartão</li>
+        <li>Indicadores e relatórios gerenciais</li>
+        <li>Acesso liberado enquanto a assinatura estiver ativa</li>
+        <li>Após a confirmação do pagamento pela Hotmart, acesso à área de membros com link direto ao FinControl 360°</li>
+      </ul>
+    </section>
+
+    <div class="actions">
+      <a
+        class="primary"
+        href="https://pay.hotmart.com/T106607732M?sck=HOTMART_PRODUCT_PAGE&amp;off=qlf1q590&amp;hotfeature=32"
+        rel="noopener noreferrer"
+      >ASSINAR AGORA</a>
+
+      <a
+        class="secondary"
+        href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec"
+        rel="noopener noreferrer"
+      >Acessar sistema — cliente já ativado</a>
+    </div>
+
+    <p class="cta-note">O checkout Hotmart abre somente ao clicar em Assinar. Esta página não redireciona automaticamente.</p>
+
     <div class="warning">
-      A compra é feita pela Hotmart. O acesso ao sistema é ativado de forma controlada após confirmação da compra e envio dos dados necessários.
+      <strong>Garantia de 7 dias</strong> pela Hotmart, conforme as regras da plataforma.
     </div>
 
     <p class="note">
-      FinControl 360° — GEX Solutions Tech<br>
-      Tecnologia que impulsiona resultados.
+      Link público de divulgação: <strong>diogolejardam-commits.github.io/fincontrol360</strong><br>
+      FinControl 360° — GEX Solutions Tech
     </p>
   </main>
 </body>
