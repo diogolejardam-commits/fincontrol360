@@ -1,119 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>FinControl 360°</title>
-  <meta name="description" content="Redirecionamento para a Central Oficial FinControl 360°.">
-  <meta name="theme-color" content="#6A00FF">
+  <meta name="description" content="Página oficial de instalação e acesso ao FinControl 360°.">
+  <meta name="theme-color" content="#080D19">
+  <meta name="color-scheme" content="dark">
+  <meta name="application-name" content="FinControl 360°">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
-  <meta name="application-name" content="FinControl 360°">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://diogolejardam-commits.github.io/fincontrol360/favicon-32.png">
+  <link rel="canonical" href="https://diogolejardam-commits.github.io/fincontrol360/app/">
+  <link rel="manifest" href="./manifest.webmanifest?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v2.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v2.png">
   <style>
     :root {
-      --gex-black: #0B0B0B;
-      --gex-purple: #6A00FF;
-      --gex-purple-dark: #3D008F;
-      --gex-white: #F5F7FA;
-      --gex-silver: #C0C0C8;
-      --gex-gold: #D4AF37;
-      --gex-muted: rgba(245, 247, 250, 0.55);
-      --gex-border: rgba(212, 175, 55, 0.22);
-      --gex-purple-soft: rgba(106, 0, 255, 0.14);
+      --background: #080d19;
+      --surface: rgba(13, 20, 36, 0.96);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #f7f9fc;
+      --muted: #aab4c6;
+      --green: #19b75a;
+      --green-light: #84df42;
+      --blue: #087bd8;
+      --focus: #b7ff74;
     }
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body {
-      margin: 0;
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--background);
+    }
+
+    body {
+      min-height: 100vh;
       min-height: 100dvh;
-      background: radial-gradient(ellipse at 50% 0%, #1a0a3d 0%, var(--gex-black) 45%, #050505 100%);
-      color: var(--gex-white);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        20px
+        max(24px, env(safe-area-inset-bottom));
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 50% 5%, rgba(8, 123, 216, 0.22), transparent 34rem),
+        radial-gradient(circle at 100% 100%, rgba(25, 183, 90, 0.14), transparent 26rem),
+        var(--background);
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+        sans-serif;
       -webkit-font-smoothing: antialiased;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      padding-top: max(24px, env(safe-area-inset-top));
-      padding-bottom: max(24px, env(safe-area-inset-bottom));
     }
+
+    main {
+      width: min(100%, 430px);
+    }
+
     .card {
-      width: min(100%, 400px);
+      padding: 30px 24px 24px;
       text-align: center;
-      padding: 32px 24px;
-      border-radius: 18px;
-      border: 1px solid var(--gex-border);
-      background: rgba(11, 11, 11, 0.94);
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 40px rgba(106, 0, 255, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.46),
+        0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
-    h1 { margin: 0 0 16px; font-size: 1.25rem; font-weight: 700; line-height: 1.45; color: var(--gex-silver); }
-    .btn {
+
+    .logo {
+      width: 144px;
+      height: 144px;
+      margin: 0 auto 18px;
+      display: block;
+      border-radius: 30px;
+      object-fit: cover;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.40);
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--green-light);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 9vw, 2.65rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+
+    .subtitle {
+      max-width: 330px;
+      margin: 13px auto 24px;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .access-button {
+      width: 100%;
+      min-height: 56px;
+      padding: 16px 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      padding: 15px 20px;
-      border: 0;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--gex-purple-dark) 0%, var(--gex-purple) 100%);
-      color: var(--gex-white);
-      font-size: 1rem;
-      font-weight: 700;
+      border-radius: 16px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #087bd8 0%, #19b75a 100%);
+      box-shadow: 0 15px 32px rgba(8, 123, 216, 0.24);
+      font-size: 0.96rem;
+      font-weight: 850;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
       text-decoration: none;
-      box-shadow: 0 8px 28px rgba(106, 0, 255, 0.35);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .hint {
+
+    .access-button:active {
+      transform: scale(0.98);
+    }
+
+    .access-button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 4px;
+    }
+
+    .install {
       margin-top: 18px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      background: var(--gex-purple-soft);
-      border: 1px solid rgba(106, 0, 255, 0.35);
-      font-size: 0.8125rem;
-      line-height: 1.55;
-      color: var(--gex-silver);
+      padding: 16px;
       text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.035);
     }
-    .hint strong { color: var(--gex-gold); }
-    .spinner {
-      width: 22px;
-      height: 22px;
-      margin: 16px auto 0;
-      border: 2px solid rgba(245, 247, 250, 0.15);
-      border-top-color: var(--gex-purple);
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
+
+    .install strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 0.88rem;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .install ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .official {
+      margin: 17px 0 0;
+      color: #7f8a9d;
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 370px) {
+      .card {
+        padding: 24px 18px 20px;
+        border-radius: 23px;
+      }
+
+      .logo {
+        width: 124px;
+        height: 124px;
+        border-radius: 27px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .access-button {
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="card" role="status" aria-live="polite">
-    <p id="fc-msg" class="card-msg">O acesso oficial do FinControl 360° agora está centralizado.</p>
-    <a id="fc-central-btn" class="btn" href="https://diogolejardam-commits.github.io/fincontrol360/">Abrir Central FinControl 360°</a>
-    <p id="fc-hint" class="hint">Para instalar no iPhone, acesse pelo <strong>Safari</strong> e use <strong>Compartilhar</strong> &gt; <strong>Adicionar à Tela de Início</strong>.</p>
-    <div id="fc-spinner" class="spinner" hidden aria-hidden="true"></div>
-  </div>
-  <script>
-    (function () {
-      'use strict';
-      var CENTRAL_URL = 'https://diogolejardam-commits.github.io/fincontrol360/';
-      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
-      var isStandalone =
-        window.navigator.standalone === true ||
-        window.matchMedia('(display-mode: standalone)').matches;
+  <main>
+    <section class="card" aria-labelledby="page-title">
+      <img
+        class="logo"
+        src="./fincontrol-icon-512-v2.png"
+        width="512"
+        height="512"
+        alt="Logomarca oficial do FinControl 360°"
+      >
 
-      if (isStandalone) {
-        document.getElementById('fc-msg').textContent = 'Abrindo FinControl 360°...';
-        document.getElementById('fc-central-btn').style.display = 'none';
-        document.getElementById('fc-hint').style.display = 'none';
-        document.getElementById('fc-spinner').hidden = false;
-        window.setTimeout(function () { window.location.replace(APP_URL); }, 450);
-      }
-    })();
-  </script>
+      <p class="eyebrow">Acesso oficial</p>
+      <h1 id="page-title">FinControl 360°</h1>
+      <p class="subtitle">
+        Instale o acesso oficial no iPhone ou entre agora no seu ambiente financeiro.
+      </p>
+
+      <a
+        class="access-button"
+        href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec"
+        rel="noopener noreferrer"
+      >ACESSAR FINCONTROL 360°</a>
+
+      <div class="install">
+        <strong>Instalar no iPhone pelo Safari</strong>
+        <ol>
+          <li>Toque em Compartilhar.</li>
+          <li>Escolha “Adicionar à Tela de Início”.</li>
+          <li>Confirme o nome “FinControl 360°”.</li>
+        </ol>
+      </div>
+
+      <p class="official">FinControl 360° · GEX Solutions Tech</p>
+    </section>
+  </main>
 </body>
 </html>
