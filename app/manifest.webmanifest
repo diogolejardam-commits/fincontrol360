@@ -1,10 +1,10 @@
 {
   "id": "./",
   "name": "FinControl 360°",
-  "short_name": "FinControl",
+  "short_name": "FinControl 360°",
   "description": "Acesso oficial ao FinControl 360°.",
   "lang": "pt-BR",
-  "start_url": "./index.html?v=2",
+  "start_url": "./index.html?v=3",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
