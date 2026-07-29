@@ -226,5 +226,21 @@
       <p class="official">FinControl 360° · GEX Solutions Tech</p>
     </section>
   </main>
+  <script>
+    (function () {
+      'use strict';
+
+      var APP_URL = 'https://script.google.com/macros/s/AKfycbwy06jvbYMgxyuMUEvuzN-Wzjt1w7gqxul8CHe3B0yi9DXUjFfsqT_8dKfMjyRq0GjT4w/exec';
+      var isStandalone =
+        window.navigator.standalone === true ||
+        window.matchMedia('(display-mode: standalone)').matches;
+
+      document.querySelector('.access-button').href = APP_URL;
+
+      if (isStandalone) {
+        window.location.replace(APP_URL);
+      }
+    })();
+  </script>
 </body>
 </html>
