@@ -4,7 +4,7 @@
   "short_name": "FinControl 360°",
   "description": "Acesso oficial ao FinControl 360°.",
   "lang": "pt-BR",
-  "start_url": "./index.html?v=3",
+  "start_url": "./index.html?v=4",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
