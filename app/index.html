@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <link rel="canonical" href="https://diogolejardam-commits.github.io/fincontrol360/app/">
-  <link rel="manifest" href="./manifest.webmanifest?v=5">
+  <link rel="manifest" href="./manifest.webmanifest?v=6">
   <!-- FC-PWA-ICONE-IPHONE-01: ícones versionados + caminho absoluto para Safari iOS -->
   <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=5">
   <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v3.png?v=5">
@@ -242,17 +242,11 @@
   <script>
     (function () {
       'use strict';
-
+      // Página exclusivamente de instalação/acesso manual (Safari).
+      // O ícone instalado inicia em launch.html (manifest start_url).
       var APP_URL = 'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
-      var isStandalone =
-        window.navigator.standalone === true ||
-        window.matchMedia('(display-mode: standalone)').matches;
-
-      document.querySelector('.access-button').href = APP_URL;
-
-      if (isStandalone) {
-        window.location.replace(APP_URL);
-      }
+      var btn = document.querySelector('.access-button');
+      if (btn) btn.href = APP_URL;
     })();
   </script>
 </body>
