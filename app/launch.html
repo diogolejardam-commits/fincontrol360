@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache">
   <title>FinControl 360°</title>
   <meta name="theme-color" content="#080D19">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <meta name="application-name" content="FinControl 360°">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=6">
-  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=6">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=7">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=7">
+  <link rel="manifest" href="./manifest.webmanifest?v=7">
   <style>
     html, body {
       margin: 0;
@@ -32,16 +34,29 @@
   <script>
     (function () {
       'use strict';
-      var APP_URL =
-        'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
-      window.location.replace(APP_URL);
+      // Web App OFICIAL permanente — nunca gerar outro link
+      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+
+      function go() {
+        window.location.replace(APP_URL);
+      }
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(function (reg) {
+          try { reg.update(); } catch (e) {}
+          go();
+        }).catch(go);
+        setTimeout(go, 1200);
+      } else {
+        go();
+      }
     })();
   </script>
 </head>
 <body>
   <div class="boot">
     <p>Abrindo FinControl 360°…</p>
-    <p><a id="fallback" href="https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec">Abrir FinControl 360°</a></p>
+    <p><a id="fallback" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360°</a></p>
   </div>
 </body>
 </html>

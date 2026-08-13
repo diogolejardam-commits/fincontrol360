@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>FinControl 360°</title>
   <meta name="description" content="Página oficial de instalação e acesso ao FinControl 360°.">
@@ -13,13 +14,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <link rel="canonical" href="https://diogolejardam-commits.github.io/fincontrol360/app/">
-  <link rel="manifest" href="./manifest.webmanifest?v=6">
+  <link rel="manifest" href="./manifest.webmanifest?v=7">
   <!-- FC-PWA-ICONE-IPHONE-01: ícones versionados + caminho absoluto para Safari iOS -->
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=5">
-  <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v3.png?v=5">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/app/fincontrol-apple-180-v3.png?v=5">
-  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=5">
-  <link rel="icon" type="image/png" sizes="512x512" href="./fincontrol-icon-512-v3.png?v=5">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=7">
+  <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v3.png?v=7">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/app/fincontrol-apple-180-v3.png?v=7">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=7">
+  <link rel="icon" type="image/png" sizes="512x512" href="./fincontrol-icon-512-v3.png?v=7">
   <style>
     :root {
       --background: #080d19;
@@ -207,7 +208,7 @@
     <section class="card" aria-labelledby="page-title">
       <img
         class="logo"
-        src="./fincontrol-icon-512-v3.png?v=5"
+        src="./fincontrol-icon-512-v3.png?v=7"
         width="512"
         height="512"
         alt="Logomarca oficial do FinControl 360°"
@@ -221,7 +222,7 @@
 
       <a
         class="access-button"
-        href="https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec"
+        href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec"
         rel="noopener noreferrer"
       >ACESSAR FINCONTROL 360°</a>
 
@@ -239,12 +240,26 @@
       <p class="official">FinControl 360° · GEX Solutions Tech</p>
     </section>
   </main>
+  <script src="./pwa-register.js?v=7" defer></script>
   <script>
     (function () {
       'use strict';
-      // Página exclusivamente de instalação/acesso manual (Safari).
-      // O ícone instalado inicia em launch.html (manifest start_url).
-      var APP_URL = 'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
+      // Web App OFICIAL permanente
+      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      function isStandalone() {
+        try {
+          if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+        } catch (e1) {}
+        try {
+          if (typeof navigator.standalone === 'boolean' && navigator.standalone) return true;
+        } catch (e2) {}
+        return false;
+      }
+      // App já instalado: nunca reexibir onboarding de instalação
+      if (isStandalone()) {
+        window.location.replace('./launch.html?v=7');
+        return;
+      }
       var btn = document.querySelector('.access-button');
       if (btn) btn.href = APP_URL;
     })();
