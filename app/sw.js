@@ -5,7 +5,7 @@
  */
 'use strict';
 
-var FC_PWA_CACHE = 'fincontrol360-pwa-v8';
+var FC_PWA_CACHE = 'fincontrol360-pwa-v9';
 var FC_PWA_CACHE_PREFIX = 'fincontrol360-pwa-';
 var FC_WEBAPP_OFICIAL =
   'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';

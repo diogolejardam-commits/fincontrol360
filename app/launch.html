@@ -9,9 +9,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <meta name="application-name" content="FinControl 360°">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=8">
-  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=8">
-  <link rel="manifest" href="./manifest.webmanifest?v=8">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=9">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=9">
+  <link rel="manifest" href="./manifest.webmanifest?v=9">
   <style>
     html, body {
       margin: 0;
@@ -30,32 +30,59 @@
       text-align: center;
     }
     a { color: #84df42; }
+    .muted { font-size: .85rem; color: #7f8aa3; max-width: 28rem; line-height: 1.4; }
   </style>
   <script>
     (function () {
       'use strict';
-      // Web App OFICIAL permanente — nunca gerar outro link
+      // Web App OFICIAL permanente — nunca gerar outro link de produção
       var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var ORIGIN_GITHUB = 'https://diogolejardam-commits.github.io';
+      var params = new URLSearchParams(location.search || '');
 
-      function go() {
+      // Identidade PWA = origem GitHub. Se o fluxo de push pedir, permanecer em GitHub.
+      if (params.get('push') === '1' || params.get('fcpush') === '1' || params.get('ativar') === '1') {
+        var q = location.search || '';
+        location.replace('./push-ativar.html' + q);
+        return;
+      }
+
+      // Se alguém abriu launch em origem errada, não fingir que é a PWA GitHub.
+      try {
+        if (location.origin !== ORIGIN_GITHUB) {
+          document.addEventListener('DOMContentLoaded', function () {
+            var el = document.getElementById('bootMsg');
+            if (el) el.textContent = 'Abra a PWA oficial em GitHub Pages (não Apps Script) para instalar/ativar push.';
+          });
+          return;
+        }
+      } catch (e0) {}
+
+      var went = false;
+      function goApp() {
+        if (went) return;
+        went = true;
+        // Apps Script é o shell do app; a identidade/instalação da PWA permanece GitHub (SW/scope).
         window.location.replace(APP_URL);
       }
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(function (reg) {
           try { reg.update(); } catch (e) {}
-          go();
-        }).catch(go);
-        setTimeout(go, 1200);
+          // Pequeno atraso para SW assumir — sem loop PWA↔Script↔PWA
+          setTimeout(goApp, 400);
+        }).catch(goApp);
+        setTimeout(goApp, 2500);
       } else {
-        go();
+        goApp();
       }
     })();
   </script>
 </head>
 <body>
   <div class="boot">
-    <p>Abrindo FinControl 360°…</p>
+    <p id="bootMsg">Abrindo FinControl 360°…</p>
+    <p class="muted">PWA oficial: GitHub Pages. O app financeiro abre no Web App oficial.</p>
     <p><a id="fallback" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360°</a></p>
   </div>
 </body>
