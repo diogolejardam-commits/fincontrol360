@@ -9,16 +9,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <meta name="application-name" content="FinControl 360°">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=9">
-  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=9">
-  <link rel="manifest" href="./manifest.webmanifest?v=9">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=9r1">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=9r1">
+  <link rel="manifest" href="./manifest.webmanifest?v=9r1">
   <style>
     html, body {
       margin: 0;
       width: 100%;
       height: 100%;
       background: #080d19;
-      color: #aab4c6;
+      color: #e8eef8;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     .boot {
@@ -29,61 +29,127 @@
       padding: 24px;
       text-align: center;
     }
-    a { color: #84df42; }
-    .muted { font-size: .85rem; color: #7f8aa3; max-width: 28rem; line-height: 1.4; }
+    .card {
+      max-width: 28rem;
+      width: 100%;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 8px; }
+    .muted { font-size: .85rem; color: #7f8aa3; line-height: 1.45; margin: 0 0 16px; }
+    .env { font-size: .75rem; color: #aab4c6; margin-bottom: 14px; }
+    a.btn, button.btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0 0 10px;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      background: #84df42;
+      color: #081018;
+    }
+    a.btn.secondary, button.btn.secondary {
+      background: transparent;
+      color: #e8eef8;
+      border: 1px solid rgba(255,255,255,.22);
+    }
+    .err { color: #ff8f8f; font-size: .85rem; }
   </style>
   <script>
     (function () {
       'use strict';
-      // Web App OFICIAL permanente — nunca gerar outro link de produção
-      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      // Deployments fixos já existentes — sem criar URL nova
+      var WEBAPP_OFICIAL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var WEBAPP_HOMOLOG = 'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
+      var ALLOWED = [WEBAPP_OFICIAL, WEBAPP_HOMOLOG];
       var ORIGIN_GITHUB = 'https://diogolejardam-commits.github.io';
       var params = new URLSearchParams(location.search || '');
 
-      // Identidade PWA = origem GitHub. Se o fluxo de push pedir, permanecer em GitHub.
+      function resolveAppUrl_() {
+        var q = params.get('webapp') || params.get('return') || '';
+        if (ALLOWED.indexOf(q) >= 0) return q;
+        var env = String(params.get('env') || '').toLowerCase();
+        if (env === 'homolog' || env === 'homologacao' || env === 'h') return WEBAPP_HOMOLOG;
+        return WEBAPP_OFICIAL;
+      }
+
+      // Fluxo Push: permanecer na origem GitHub (standalone) — NÃO ir ao Apps Script antes.
       if (params.get('push') === '1' || params.get('fcpush') === '1' || params.get('ativar') === '1') {
-        var q = location.search || '';
-        location.replace('./push-ativar.html' + q);
+        var qPush = location.search || '';
+        location.replace('./push-ativar.html' + qPush);
         return;
       }
 
-      // Se alguém abriu launch em origem errada, não fingir que é a PWA GitHub.
       try {
         if (location.origin !== ORIGIN_GITHUB) {
           document.addEventListener('DOMContentLoaded', function () {
             var el = document.getElementById('bootMsg');
-            if (el) el.textContent = 'Abra a PWA oficial em GitHub Pages (não Apps Script) para instalar/ativar push.';
+            if (el) el.textContent = 'Abra a PWA oficial em GitHub Pages para instalar/ativar push.';
           });
           return;
         }
       } catch (e0) {}
 
-      var went = false;
-      function goApp() {
-        if (went) return;
-        went = true;
-        // Apps Script é o shell do app; a identidade/instalação da PWA permanece GitHub (SW/scope).
-        window.location.replace(APP_URL);
+      var APP_URL = resolveAppUrl_();
+      var isHomolog = APP_URL === WEBAPP_HOMOLOG;
+
+      function isStandalone() {
+        try {
+          if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+        } catch (e1) {}
+        try {
+          if (typeof navigator.standalone === 'boolean' && navigator.standalone) return true;
+        } catch (e2) {}
+        return false;
       }
 
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').then(function (reg) {
           try { reg.update(); } catch (e) {}
-          // Pequeno atraso para SW assumir — sem loop PWA↔Script↔PWA
-          setTimeout(goApp, 400);
-        }).catch(goApp);
-        setTimeout(goApp, 2500);
-      } else {
-        goApp();
+        }).catch(function () {});
       }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var openBtn = document.getElementById('openApp');
+        var pushBtn = document.getElementById('openPush');
+        var envEl = document.getElementById('envLabel');
+        var msg = document.getElementById('bootMsg');
+        if (openBtn) openBtn.href = APP_URL;
+        if (pushBtn) {
+          var pushQ = new URLSearchParams();
+          pushQ.set('push', '1');
+          if (isHomolog) pushQ.set('return', WEBAPP_HOMOLOG);
+          else pushQ.set('return', WEBAPP_OFICIAL);
+          pushBtn.href = './push-ativar.html?' + pushQ.toString();
+        }
+        if (envEl) {
+          envEl.textContent = isHomolog
+            ? 'Destino: homologação (deployment fixo existente)'
+            : 'Destino: produção oficial @328';
+        }
+        if (msg) {
+          msg.textContent = isStandalone()
+            ? 'PWA GitHub ativa. Escolha abrir o app ou ativar notificações sem fechar este shell.'
+            : 'Instale/abra pelo ícone da Tela de Início (GitHub) para Web Push. O app financeiro abre no Web App selecionado.';
+        }
+      });
     })();
   </script>
 </head>
 <body>
   <div class="boot">
-    <p id="bootMsg">Abrindo FinControl 360°…</p>
-    <p class="muted">PWA oficial: GitHub Pages. O app financeiro abre no Web App oficial.</p>
-    <p><a id="fallback" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec">Abrir FinControl 360°</a></p>
+    <div class="card">
+      <h1>FinControl 360°</h1>
+      <p id="bootMsg" class="muted">Preparando acesso…</p>
+      <p id="envLabel" class="env"></p>
+      <!-- NÃO usar location.replace automático para Apps Script: no iPhone isso sai do standalone e derruba o fluxo Push. -->
+      <a id="openApp" class="btn" href="https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec" rel="noopener noreferrer">Abrir FinControl 360°</a>
+      <a id="openPush" class="btn secondary" href="./push-ativar.html">Ativar notificações (PWA)</a>
+      <p class="muted">Shell PWA: GitHub Pages. Dados financeiros: Web App Apps Script (produção ou homologação allowlisted).</p>
+    </div>
   </div>
 </body>
 </html>

@@ -14,13 +14,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
   <link rel="canonical" href="https://diogolejardam-commits.github.io/fincontrol360/app/">
-  <link rel="manifest" href="./manifest.webmanifest?v=9">
+  <link rel="manifest" href="./manifest.webmanifest?v=9r1">
   <!-- FC-PWA-ICONE-IPHONE-01: ícones versionados + caminho absoluto para Safari iOS -->
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=9">
-  <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v3.png?v=9">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/app/fincontrol-apple-180-v3.png?v=9">
-  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=9">
-  <link rel="icon" type="image/png" sizes="512x512" href="./fincontrol-icon-512-v3.png?v=9">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=9r1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./fincontrol-apple-180-v3.png?v=9r1">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://diogolejardam-commits.github.io/fincontrol360/app/fincontrol-apple-180-v3.png?v=9r1">
+  <link rel="icon" type="image/png" sizes="192x192" href="./fincontrol-icon-192-v3.png?v=9r1">
+  <link rel="icon" type="image/png" sizes="512x512" href="./fincontrol-icon-512-v3.png?v=9r1">
   <style>
     :root {
       --background: #080d19;
@@ -208,7 +208,7 @@
     <section class="card" aria-labelledby="page-title">
       <img
         class="logo"
-        src="./fincontrol-icon-512-v3.png?v=9"
+        src="./fincontrol-icon-512-v3.png?v=9r1"
         width="512"
         height="512"
         alt="Logomarca oficial do FinControl 360°"
@@ -240,12 +240,22 @@
       <p class="official">FinControl 360° · GEX Solutions Tech</p>
     </section>
   </main>
-  <script src="./pwa-register.js?v=9" defer></script>
+  <script src="./pwa-register.js?v=9r1" defer></script>
   <script>
     (function () {
       'use strict';
-      // Web App OFICIAL permanente
-      var APP_URL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var WEBAPP_OFICIAL = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
+      var WEBAPP_HOMOLOG = 'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
+      var ALLOWED = [WEBAPP_OFICIAL, WEBAPP_HOMOLOG];
+      var params = new URLSearchParams(location.search || '');
+      function resolveAppUrl_() {
+        var q = params.get('webapp') || params.get('return') || '';
+        if (ALLOWED.indexOf(q) >= 0) return q;
+        var env = String(params.get('env') || '').toLowerCase();
+        if (env === 'homolog' || env === 'homologacao' || env === 'h') return WEBAPP_HOMOLOG;
+        return WEBAPP_OFICIAL;
+      }
+      var APP_URL = resolveAppUrl_();
       function isStandalone() {
         try {
           if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
@@ -255,9 +265,11 @@
         } catch (e2) {}
         return false;
       }
-      // App já instalado: nunca reexibir onboarding de instalação
+      // App já instalado: ir ao hub GitHub (não redirecionar direto ao Apps Script)
       if (isStandalone()) {
-        window.location.replace('./launch.html?v=9');
+        var hub = './launch.html?v=9r1';
+        if (APP_URL === WEBAPP_HOMOLOG) hub += '&env=homolog';
+        window.location.replace(hub);
         return;
       }
       var btn = document.querySelector('.access-button');

@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#080D19">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
-  <link rel="manifest" href="./manifest.webmanifest?v=9">
+  <link rel="manifest" href="./manifest.webmanifest?v=9r1">
   <style>
     body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       background:#080d19; color:#e8eef8; min-height:100vh; display:grid; place-items:center; padding:24px; }
@@ -33,7 +33,7 @@
     <button id="btn" type="button">Ativar notificações</button>
     <button class="secondary" id="btnOpen" type="button">Abrir FinControl 360°</button>
   </div>
-  <script src="./pwa-register.js?v=9" defer></script>
+  <script src="./pwa-register.js?v=9r1" defer></script>
   <script>
   (function(){
     'use strict';
@@ -137,8 +137,10 @@
       setErr('Abra o FinControl 360° pela PWA oficial instalada a partir de GitHub Pages.');
       btn.disabled = true;
     } else if (contexto === 'SAFARI_GITHUB' && /iPhone|iPad|iPod/i.test(navigator.userAgent || '')) {
-      setInfo('Instale/abra pelo ícone FinControl 360° da Tela de Início (origem GitHub). Depois toque Ativar notificações.');
+      // Não navegar embora nem limpar a UI — permanecer com o código na URL.
+      setInfo('Esta página abriu no Safari. No iPhone, abra pelo ícone FinControl 360° da Tela de Início (PWA GitHub). O código de vínculo permanece nesta URL por alguns minutos.');
       btn.textContent = 'Ativar notificações';
+      btn.disabled = true;
     } else if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
       setErr('As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.');
       btn.disabled = true;
