@@ -1,17 +1,20 @@
 /* FinControl 360° — PWA Service Worker
- * FC-PWA-AUTOUPDATE-01
- * Escopo: somente assets da PWA/launcher em /app/
- * PROIBIDO: cachear script.google.com, APIs, tokens ou dados financeiros.
+ * FC-PWA-AUTOUPDATE-01 + FC-NOTIFICACOES-PUSH-01
+ * AutoUpdate + Web Push no MESMO SW / scope /app/
+ * PROIBIDO: cachear script.google.com, tokens ou dados financeiros.
  */
 'use strict';
 
-var FC_PWA_CACHE = 'fincontrol360-pwa-v7';
+var FC_PWA_CACHE = 'fincontrol360-pwa-v8';
 var FC_PWA_CACHE_PREFIX = 'fincontrol360-pwa-';
+var FC_WEBAPP_OFICIAL =
+  'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
 
 var PRECACHE = [
   './',
   './index.html',
   './launch.html',
+  './push-ativar.html',
   './manifest.webmanifest',
   './apple-touch-icon.png',
   './fincontrol-icon-192-v3.png',
@@ -72,20 +75,16 @@ self.addEventListener('fetch', function (event) {
   var url;
   try { url = new URL(request.url); } catch (e) { return; }
 
-  // Nunca interceptar Apps Script / conteúdo autenticado
   if (isGoogleAppsScript(request.url)) return;
   if (url.origin !== self.location.origin) return;
-  // Somente escopo GitHub Pages /fincontrol360/app/
   if (url.pathname.indexOf('/fincontrol360/app') === -1) return;
 
-  // Service worker script: network only
   if (/\/sw\.js$/i.test(url.pathname)) {
     event.respondWith(fetch(request));
     return;
   }
 
   if (isHtmlOrManifest(request, url)) {
-    // Network-first para HTML/manifest — evita HTML eterno
     event.respondWith(
       fetch(request).then(function (response) {
         if (response && response.ok) {
@@ -104,7 +103,6 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
-  // Assets estáticos da PWA: cache-first, sem dados financeiros
   event.respondWith(
     caches.match(request).then(function (cached) {
       if (cached) return cached;
@@ -126,4 +124,56 @@ self.addEventListener('message', function (event) {
   if (event.data.type === 'FC_PWA_SKIP_WAITING') {
     self.skipWaiting();
   }
+});
+
+self.addEventListener('push', function (event) {
+  var title = 'FinControl 360°';
+  var options = {
+    body: 'Você tem alertas de vencimento.',
+    icon: './fincontrol-icon-192-v3.png',
+    badge: './fincontrol-icon-192-v3.png',
+    data: { url: FC_WEBAPP_OFICIAL },
+    tag: 'fc-push-vencimento',
+    renotify: true
+  };
+  try {
+    if (event.data) {
+      var raw = event.data.text();
+      try {
+        var parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          if (parsed.title) title = String(parsed.title).substring(0, 80);
+          if (parsed.body) options.body = String(parsed.body).substring(0, 180);
+          if (parsed.url && /^https:\/\/script\.google\.com\//i.test(parsed.url)) {
+            options.data.url = parsed.url;
+          }
+        }
+      } catch (e1) {
+        if (raw) options.body = String(raw).substring(0, 180);
+      }
+    }
+  } catch (e2) {}
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', function (event) {
+  event.notification.close();
+  var target = FC_WEBAPP_OFICIAL;
+  try {
+    if (event.notification && event.notification.data && event.notification.data.url) {
+      target = event.notification.data.url;
+    }
+  } catch (e) {}
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
+      for (var i = 0; i < list.length; i++) {
+        var c = list[i];
+        if (c.url && c.url.indexOf('script.google.com') !== -1 && 'focus' in c) {
+          return c.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(target);
+      return undefined;
+    })
+  );
 });

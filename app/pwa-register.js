@@ -1,11 +1,8 @@
 /* FinControl 360° — registro/atualização do Service Worker (PWA only) */
 (function () {
   'use strict';
-  var FC_PWA_VERSION = 'fincontrol360-pwa-v7';
+  var FC_PWA_VERSION = 'fincontrol360-pwa-v8';
   var SEEN_KEY = 'fc_pwa_seen_version';
-  var PENDING_KEY = 'fc_pwa_update_pending';
-  var RELOAD_KEY = 'fc_pwa_update_reloaded';
-  var updatePending = false;
 
   function isStandalone() {
     try {
@@ -23,8 +20,7 @@
       if (seen === FC_PWA_VERSION) return;
       localStorage.setItem(SEEN_KEY, FC_PWA_VERSION);
     } catch (e) {
-      // Sem persistência não é possível garantir "uma vez por versão".
-      return;
+      // se storage bloqueado, não insiste
     }
     if (document.getElementById('fc-pwa-updated-toast')) return;
     var el = document.createElement('div');
@@ -47,56 +43,38 @@
     }, 3200);
   }
 
-  function markRealUpdate() {
-    updatePending = true;
-    try { sessionStorage.setItem(PENDING_KEY, FC_PWA_VERSION); } catch (e) {}
-  }
-
-  function hasRealUpdatePending() {
-    if (updatePending) return true;
-    try {
-      return sessionStorage.getItem(PENDING_KEY) === FC_PWA_VERSION;
-    } catch (e) {
-      return false;
-    }
-  }
-
   function onControllerChangeOnce() {
     var reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       if (reloaded) return;
-      // clients.claim também dispara na instalação inicial; só recarrega
-      // quando updatefound confirmou que já existia um controlador anterior.
-      if (!hasRealUpdatePending()) return;
       reloaded = true;
+      try { sessionStorage.setItem('fc_pwa_reload_once', '1'); } catch (e) {}
+      // Evita loop: só reload se ainda não recarregamos nesta ativação
       try {
-        sessionStorage.removeItem(PENDING_KEY);
-        sessionStorage.setItem(RELOAD_KEY, FC_PWA_VERSION);
-      } catch (e) {}
+        if (sessionStorage.getItem('fc_pwa_reloading') === '1') return;
+        sessionStorage.setItem('fc_pwa_reloading', '1');
+      } catch (e2) {}
       window.location.reload();
     });
   }
 
   function trackWaiting(reg) {
     if (!reg) return;
-    function promote(worker, isRealUpdate) {
+    function promote(worker) {
       if (!worker) return;
       if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-        if (isRealUpdate) markRealUpdate();
         worker.postMessage({ type: 'FC_PWA_SKIP_WAITING' });
       }
     }
-    if (reg.waiting) promote(reg.waiting, !!navigator.serviceWorker.controller);
+    if (reg.waiting) promote(reg.waiting);
     reg.addEventListener('updatefound', function () {
       var nw = reg.installing;
       if (!nw) return;
-      // Capturado antes da ativação: na primeira instalação ainda não há
-      // controlador; em atualização real a versão anterior controla a página.
-      var isRealUpdate = !!navigator.serviceWorker.controller;
-      if (isRealUpdate) markRealUpdate();
       nw.addEventListener('statechange', function () {
         if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-          promote(nw, isRealUpdate);
+          promote(nw);
+        } else if (nw.state === 'activated') {
+          showUpdatedToastOnce();
         }
       });
     });
@@ -110,10 +88,10 @@
 
   if (!('serviceWorker' in navigator)) return;
 
-  // Toast somente após o reload causado por uma atualização real.
+  // Limpa flag de reload após carga estável
   try {
-    if (sessionStorage.getItem(RELOAD_KEY) === FC_PWA_VERSION) {
-      sessionStorage.removeItem(RELOAD_KEY);
+    if (sessionStorage.getItem('fc_pwa_reloading') === '1') {
+      sessionStorage.removeItem('fc_pwa_reloading');
       showUpdatedToastOnce();
     }
   } catch (e3) {}
