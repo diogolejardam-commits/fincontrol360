@@ -22,17 +22,18 @@
   <script>
     (function () {
       'use strict';
-      // Ambiente canônico = HEAD /dev (fonte de verdade runtime).
-      // @328 = histórico/rollback (somente ?env=prod técnico). Homolog = apoio técnico.
+      // Runtime financeiro canônico = HEAD /dev (após Push no origin GitHub).
+      // @328 = histórico/rollback (somente ?env=prod técnico). Homolog = apoio técnico / JSONP bind.
       var WEBAPP_CANONICO = 'https://script.google.com/macros/s/AKfycbwNkB9moeaKqy5155S9tBEB-3YjjgQKsG4qBv1v_AsJ/dev';
       var WEBAPP_HOMOLOG = 'https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec';
       var WEBAPP_PRODUCAO = 'https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec';
       var ALLOWED = [WEBAPP_CANONICO, WEBAPP_HOMOLOG, WEBAPP_PRODUCAO];
       var ORIGIN_GITHUB = 'https://diogolejardam-commits.github.io';
+      var LS_PUSH_BOUND = 'fc_pwa_push_bound';
+      var LS_PUSH_SKIP = 'fc_pwa_push_skip';
       var params = new URLSearchParams(location.search || '');
 
       function resolveAppUrl_() {
-        // Parâmetro técnico interno apenas (não exibido ao usuário final).
         var q = params.get('webapp') || params.get('return') || '';
         if (ALLOWED.indexOf(q) >= 0) return q;
         var env = String(params.get('env') || '').toLowerCase();
@@ -40,9 +41,44 @@
         return WEBAPP_CANONICO;
       }
 
-      // Fluxo Push: permanecer na origem GitHub (standalone).
+      function isStandalone_() {
+        try {
+          if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+        } catch (e1) {}
+        return !!(navigator.standalone);
+      }
+
+      function pushJaProntoLocal_() {
+        try {
+          if (localStorage.getItem(LS_PUSH_SKIP) === '1') return true;
+          // Fail-closed: só BACKEND_BOUND libera onboarding Push
+          if (localStorage.getItem(LS_PUSH_BOUND) === '1') return true;
+        } catch (e0) {}
+        try {
+          if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
+            return true;
+          }
+        } catch (e1) {}
+        return false;
+      }
+
+      function precisaAtivarPushAntesDoFinControl_() {
+        // FC-PUSH-IOS-ORIGIN-PWA-05: Web Push no origin GitHub ANTES de script.google.com
+        if (!isStandalone_()) return false;
+        if (params.get('skippush') === '1') return false;
+        if (pushJaProntoLocal_()) return false;
+        return true;
+      }
+
+      // Fluxo Push explícito (código de vínculo / bind)
       if (params.get('push') === '1' || params.get('fcpush') === '1' || params.get('ativar') === '1') {
         location.replace('./push-ativar.html' + (location.search || ''));
+        return;
+      }
+
+      // Onboarding Push no origin PWA — NÃO abrir Apps Script ainda
+      if (precisaAtivarPushAntesDoFinControl_()) {
+        location.replace('./push-ativar.html?v=9r2&origem=launch');
         return;
       }
 
@@ -77,14 +113,16 @@
       document.addEventListener('DOMContentLoaded', function () {
         var a = document.getElementById('fallback');
         if (a) a.href = APP_URL;
+        var el = document.getElementById('bootMsg');
+        if (el) el.textContent = 'Abrindo FinControl 360°…';
       });
     })();
   </script>
 </head>
 <body>
   <div class="boot">
-    <p id="bootMsg">Abrindo FinControl 360°…</p>
-    <p class="muted">Entrada canônica: PWA GitHub → runtime oficial /dev (HEAD).</p>
+    <p id="bootMsg">Preparando FinControl 360°…</p>
+    <p class="muted">PWA GitHub: notificações no origin instalado; depois runtime financeiro.</p>
     <p><a id="fallback" href="https://script.google.com/macros/s/AKfycbwNkB9moeaKqy5155S9tBEB-3YjjgQKsG4qBv1v_AsJ/dev">Abrir FinControl 360°</a></p>
   </div>
 </body>

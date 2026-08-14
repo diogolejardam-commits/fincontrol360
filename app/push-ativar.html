@@ -51,6 +51,12 @@
     var MSG_SOLICITANDO = 'Solicitando permissão…';
     var MSG_GRANTED_PROGRESS = 'Permissão concedida. Finalizando ativação…';
     var MSG_SUCESSO = '✅ Notificações ativadas neste iPhone.';
+    var MSG_ATIVAS = '✅ Notificações ativas neste iPhone.';
+    var MSG_LOCAL_PREPARED = 'Notificações preparadas neste iPhone. Entre no FinControl para concluir o vínculo com sua conta.';
+    var LS_PUSH_LOCAL = 'fc_pwa_push_local_prepared';
+    var LS_PUSH_BOUND = 'fc_pwa_push_bound';
+    var LS_PUSH_SKIP = 'fc_pwa_push_skip';
+    var LS_PUSH_ATIVO = 'fc12_push_ativo';
 
     var params = new URLSearchParams(location.search);
     var code = params.get('code') || '';
@@ -113,6 +119,26 @@
         if (typeof Notification === 'undefined') return 'n/a';
         return String(Notification.permission || 'default');
       } catch (e0) { return 'n/a'; }
+    }
+    function marcarLocalPrepared_() {
+      try { localStorage.setItem(LS_PUSH_LOCAL, '1'); } catch (e0) {}
+    }
+    function marcarBackendBound_() {
+      try { localStorage.setItem(LS_PUSH_BOUND, '1'); } catch (e0) {}
+      try { localStorage.setItem(LS_PUSH_ATIVO, '1'); } catch (e1) {}
+      try { localStorage.setItem('fc12_notif_user_choice', 'granted'); } catch (e2) {}
+    }
+    function marcarSkipPush_() {
+      try { localStorage.setItem(LS_PUSH_SKIP, '1'); } catch (e0) {}
+    }
+    function jaBackendBound_() {
+      try { return localStorage.getItem(LS_PUSH_BOUND) === '1'; } catch (e0) { return false; }
+    }
+    function jaLocalPrepared_() {
+      try { return localStorage.getItem(LS_PUSH_LOCAL) === '1'; } catch (e0) { return false; }
+    }
+    function jaAtivoLocal_() {
+      return jaBackendBound_();
     }
     function refreshMeta_(extra) {
       var lines = [
@@ -234,8 +260,54 @@
       }
 
       if (!code) {
-        ctx.textContent += ' Use Ativar dentro do FinControl autenticado para gerar o vínculo.';
+        if (!code) ctx.textContent += ' Ative aqui na PWA instalada. Depois abra o FinControl.';
       }
+    }
+
+
+    /**
+     * Bind no mesmo contexto PWA (JSONP) — NÃO navega para script.google.com.
+     * Evita tela branca / perda do shell standalone no iOS.
+     */
+    function bindViaJsonp_(codeVal, subscription, meta) {
+      return new Promise(function (resolve, reject) {
+        var cbName = 'fcPushBindCb_' + String(Date.now()) + '_' + String(Math.floor(Math.random() * 1e6));
+        var settled = false;
+        var scriptEl = null;
+        var timer = setTimeout(function () {
+          finish(function () { reject(new Error('Tempo esgotado ao vincular. Tente novamente.')); });
+        }, TIMEOUT_MS);
+
+        function finish(fn) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          try { delete window[cbName]; } catch (eDel) { try { window[cbName] = undefined; } catch (e2) {} }
+          try { if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl); } catch (eRm) {}
+          fn();
+        }
+
+        window[cbName] = function (resp) {
+          finish(function () { resolve(resp); });
+        };
+
+        var q =
+          'fcpushbind=1' +
+          '&code=' + encodeURIComponent(String(codeVal || '')) +
+          '&sub=' + encodeURIComponent(JSON.stringify(subscription || {})) +
+          '&meta=' + encodeURIComponent(JSON.stringify(meta || {})) +
+          '&callback=' + encodeURIComponent(cbName);
+
+        scriptEl = document.createElement('script');
+        scriptEl.async = true;
+        scriptEl.src = WEBAPP + (WEBAPP.indexOf('?') >= 0 ? '&' : '?') + q;
+        scriptEl.onerror = function () {
+          finish(function () {
+            reject(new Error('Não foi possível concluir a ativação. Tente novamente.'));
+          });
+        };
+        (document.head || document.documentElement).appendChild(scriptEl);
+      });
     }
 
     function runActivate_(fromUserGesture) {
@@ -306,17 +378,51 @@
           try { localStorage.setItem('fc_push_subscription_endpoint', jsonSub.endpoint || ''); } catch (eL) {}
 
           if (!code) {
-            setOk('Subscription local pronta. Volte ao FinControl autenticado e toque Ativar para vincular à conta.');
+            // LOCAL_PREPARED apenas — sem sucesso final / sem BACKEND_BOUND
+            marcarLocalPrepared_();
+            setInfo(MSG_LOCAL_PREPARED);
+            refreshMeta_([
+              'Estado: LOCAL_PREPARED',
+              'Origin: GitHub PWA',
+              'Permissão: ' + lerPermission_(),
+              'Subscription: sim (' + (got.reused ? 'reutilizada' : 'nova') + ')',
+              'Bind: AUSENTE (code vazio) — sucesso final bloqueado'
+            ]);
+            btn.textContent = 'Abrir FinControl para vincular';
+            btn.disabled = false;
+            btn.onclick = function () { location.href = WEBAPP_DEV; };
             return;
           }
 
           setInfo('Vinculando à sua conta…');
-          var payload = btoa(unescape(encodeURIComponent(JSON.stringify({
-            subscription: jsonSub,
-            meta: { userAgent: navigator.userAgent || '', contexto: c }
-          }))));
-          // Bridge confirma no Apps Script; app mostra MSG_SUCESSO via ?fcpushok=1
-          location.href = WEBAPP + '?fcpush=1&code=' + encodeURIComponent(code) + '#' + payload;
+          refreshMeta_(['Bind: JSONP no contexto PWA (sem navegar para script.google.com)']);
+          var bindResp = await bindViaJsonp_(code, jsonSub, {
+            userAgent: navigator.userAgent || '',
+            contexto: c
+          });
+          var bindOk = !!(bindResp && bindResp.ok === true && !(bindResp.error));
+          if (!bindOk) {
+            var em = 'Não foi possível concluir a ativação. Tente novamente.';
+            try {
+              if (bindResp && bindResp.error && bindResp.error.message) {
+                var bm = String(bindResp.error.message);
+                if (bm.length < 140) em = '❌ ' + bm;
+              }
+            } catch (eMsg) {}
+            throw new Error(em.indexOf('❌') === 0 ? em : ('❌ ' + em));
+          }
+          marcarBackendBound_();
+          setOk(MSG_SUCESSO);
+          refreshMeta_([
+            'Estado: BACKEND_BOUND',
+            'Origin: GitHub PWA',
+            'Permissão: ' + lerPermission_(),
+            'Bind: ok (fcpushbind)',
+            'Contexto: PWA (sem navegação top-level)'
+          ]);
+          btn.textContent = 'Abrir FinControl 360°';
+          btn.disabled = false;
+          btn.onclick = function () { location.href = WEBAPP_DEV; };
         } catch (err) {
           var m = String((err && err.message) || err);
           var codeErr = err && err.code;
@@ -346,14 +452,47 @@
     }
 
     document.getElementById('btnOpen').onclick = function () {
+      // Só após ativação (ou skip explícito). Nunca no meio do requestPermission.
+      if (pending) return;
+      if (!jaAtivoLocal_() && lerPermission_() !== 'granted') {
+        marcarSkipPush_();
+      }
       location.href = WEBAPP_DEV;
     };
+    document.getElementById('btnOpen').textContent = 'Continuar sem notificações';
 
     btn.addEventListener('click', function () {
       runActivate_(true);
     });
 
     aplicarUiInicial_();
+
+    // Reabertura: só BACKEND_BOUND = sucesso final; subscription sozinha = LOCAL_PREPARED
+    (async function bootAtivo_() {
+      try {
+        if (classificarContexto_() !== 'PWA_GITHUB_VALIDA') return;
+        if (jaBackendBound_()) {
+          setOk(MSG_ATIVAS);
+          btn.textContent = 'Abrir FinControl 360°';
+          btn.disabled = false;
+          btn.onclick = function () { location.href = WEBAPP_DEV; };
+          refreshMeta_(['Estado: BACKEND_BOUND']);
+          return;
+        }
+        if (lerPermission_() !== 'granted') return;
+        var reg = await ensureRegistration_();
+        var existing = null;
+        try { existing = await reg.pushManager.getSubscription(); } catch (eG) { existing = null; }
+        if (existing && !code) {
+          marcarLocalPrepared_();
+          setInfo(MSG_LOCAL_PREPARED);
+          refreshMeta_(['Estado: LOCAL_PREPARED', 'Subscription local presente', 'Bind: não confirmado']);
+          btn.textContent = 'Abrir FinControl para vincular';
+          btn.disabled = false;
+          btn.onclick = function () { location.href = WEBAPP_DEV; };
+        }
+      } catch (eBoot) {}
+    })();
 
     /**
      * Auto-continuidade SOMENTE se permission já é granted
@@ -372,7 +511,7 @@
         MSG_BLOQUEADO: MSG_BLOQUEADO,
         MSG_DEFAULT: MSG_DEFAULT,
         MSG_SUCESSO: MSG_SUCESSO,
-        version: 'v9r2-permission-fix-01'
+        version: 'v9r2-bind-fail-closed-06'
       };
     } catch (eExp) {}
   })();
