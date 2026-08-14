@@ -45,6 +45,15 @@
     var WEBAPP_OFICIAL = "https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec";
     // Bridge AS ainda allowlista só /exec; fcpush usa homolog (não @328). Destino canônico UX = /dev via launch.
     var ALLOWED_RETURN = [WEBAPP_DEV, WEBAPP_HOMOLOG, WEBAPP_OFICIAL];
+    function urlFinControlHandoffPrep_() {
+      var base = String(WEBAPP_DEV || '');
+      if (!base) return base;
+      if (/[?&]fcpwaprep=1(?:&|$)/.test(base)) return base;
+      return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'fcpwaprep=1';
+    }
+    function abrirFinControlParaVincular_() {
+      location.href = urlFinControlHandoffPrep_();
+    }
     var TIMEOUT_MS = 20000;
     var MSG_BLOQUEADO = 'As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.';
     var MSG_DEFAULT = 'Ative as notificações para continuar.';
@@ -390,7 +399,7 @@
             ]);
             btn.textContent = 'Abrir FinControl para vincular';
             btn.disabled = false;
-            btn.onclick = function () { location.href = WEBAPP_DEV; };
+            btn.onclick = function () { abrirFinControlParaVincular_(); };
             return;
           }
 
@@ -489,7 +498,7 @@
           refreshMeta_(['Estado: LOCAL_PREPARED', 'Subscription local presente', 'Bind: não confirmado']);
           btn.textContent = 'Abrir FinControl para vincular';
           btn.disabled = false;
-          btn.onclick = function () { location.href = WEBAPP_DEV; };
+          btn.onclick = function () { abrirFinControlParaVincular_(); };
         }
       } catch (eBoot) {}
     })();
@@ -511,7 +520,7 @@
         MSG_BLOQUEADO: MSG_BLOQUEADO,
         MSG_DEFAULT: MSG_DEFAULT,
         MSG_SUCESSO: MSG_SUCESSO,
-        version: 'v9r2-bind-fail-closed-06'
+        version: 'v9r2-auth-return-bind-09'
       };
     } catch (eExp) {}
   })();
