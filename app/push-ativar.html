@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#080D19">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="FinControl 360°">
-  <link rel="manifest" href="./manifest.webmanifest?v=9r1">
+  <link rel="manifest" href="./manifest.webmanifest?v=9r2">
   <style>
     body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       background:#080d19; color:#e8eef8; min-height:100vh; display:grid; place-items:center; padding:24px; }
@@ -33,22 +33,25 @@
     <button id="btn" type="button">Ativar notificações</button>
     <button class="secondary" id="btnOpen" type="button">Abrir FinControl 360°</button>
   </div>
-  <script src="./pwa-register.js?v=9r1" defer></script>
+  <script src="./pwa-register.js?v=9r2r2" defer></script>
   <script>
   (function(){
     'use strict';
     var VAPID_PUBLIC = "BBQlGY5mB9iVOA2suNGpHnLkGZQjyvs7ol2DnzFspMvcfKOc23S9q1GJOsXTFHZDdsjQVCVKMMsKuVRXwpy5DaU";
     var ORIGIN_GITHUB = "https://diogolejardam-commits.github.io";
     var PATH_PREFIX = "/fincontrol360/app";
-    var WEBAPP_OFICIAL = "https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec";
+    var WEBAPP_DEV = "https://script.google.com/macros/s/AKfycbwNkB9moeaKqy5155S9tBEB-3YjjgQKsG4qBv1v_AsJ/dev";
     var WEBAPP_HOMOLOG = "https://script.google.com/macros/s/AKfycbwyT_H_t-f9fZp3F9vOp4jMbbMpLELbegQAJ0VLMiCsHoBGqGSFAKe399RgXHKqw2tYUA/exec";
-    var ALLOWED_RETURN = [WEBAPP_OFICIAL, WEBAPP_HOMOLOG];
+    var WEBAPP_OFICIAL = "https://script.google.com/macros/s/AKfycbyHjSVSYdbHIEuzuqrWaqe-YZXuvyx21fkiNBiJhZj0eyBoeINCK5D1cD1efnzaLRs6Xg/exec";
+    // Bridge AS ainda allowlista só /exec; fcpush usa homolog (não @328). Destino canônico UX = /dev via launch.
+    var ALLOWED_RETURN = [WEBAPP_DEV, WEBAPP_HOMOLOG, WEBAPP_OFICIAL];
     var TIMEOUT_MS = 20000;
 
     var params = new URLSearchParams(location.search);
     var code = params.get('code') || '';
     var ret = params.get('return') || params.get('webapp') || '';
-    var WEBAPP = (ALLOWED_RETURN.indexOf(ret) >= 0) ? ret : WEBAPP_OFICIAL;
+    // Nunca usar /dev no redirect fcpush (bridge cairia em @328). Preferir return allowlisted /exec; default homolog.
+    var WEBAPP = (ret === WEBAPP_HOMOLOG || ret === WEBAPP_OFICIAL) ? ret : WEBAPP_HOMOLOG;
 
     var msg = document.getElementById('msg');
     var ctx = document.getElementById('ctx');
@@ -158,7 +161,7 @@
       location.href = WEBAPP;
     };
 
-    btn.addEventListener('click', function () {
+    function runActivate_() {
       if (pending) return;
       var myOp = ++opId;
       pending = true;
@@ -232,7 +235,13 @@
           }
         }
       })();
-    });
+    }
+    btn.addEventListener('click', function () { runActivate_(); });
+
+    // Um gesto do Ativar no app: se já estamos na PWA válida com código, segue sem segundo toque.
+    if (code && classificarContexto_() === 'PWA_GITHUB_VALIDA') {
+      setTimeout(function () { runActivate_(); }, 200);
+    }
   })();
   </script>
 </body>

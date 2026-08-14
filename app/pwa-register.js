@@ -1,7 +1,7 @@
 /* FinControl 360° — registro/atualização do Service Worker (PWA only) */
 (function () {
   'use strict';
-  var FC_PWA_VERSION = 'fincontrol360-pwa-v9r1';
+  var FC_PWA_VERSION = 'fincontrol360-pwa-v9r2';
   var SEEN_KEY = 'fc_pwa_seen_version';
 
   function isStandalone() {
