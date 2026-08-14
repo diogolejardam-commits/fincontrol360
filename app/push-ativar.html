@@ -46,6 +46,11 @@
     // Bridge AS ainda allowlista só /exec; fcpush usa homolog (não @328). Destino canônico UX = /dev via launch.
     var ALLOWED_RETURN = [WEBAPP_DEV, WEBAPP_HOMOLOG, WEBAPP_OFICIAL];
     var TIMEOUT_MS = 20000;
+    var MSG_BLOQUEADO = 'As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.';
+    var MSG_DEFAULT = 'Ative as notificações para continuar.';
+    var MSG_SOLICITANDO = 'Solicitando permissão…';
+    var MSG_GRANTED_PROGRESS = 'Permissão concedida. Finalizando ativação…';
+    var MSG_SUCESSO = '✅ Notificações ativadas neste iPhone.';
 
     var params = new URLSearchParams(location.search);
     var code = params.get('code') || '';
@@ -59,6 +64,7 @@
     var btn = document.getElementById('btn');
     var pending = false;
     var opId = 0;
+    var lastGestureAt = 0;
 
     function isStandalone() {
       try { if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true; } catch (e1) {}
@@ -101,19 +107,40 @@
     function setMeta(lines) {
       meta.innerHTML = (lines || []).map(function (l) { return '<div>' + l + '</div>'; }).join('');
     }
-    function permLabel() {
-      try { return (typeof Notification !== 'undefined') ? Notification.permission : 'n/a'; }
-      catch (e0) { return 'n/a'; }
+    /** Sempre ler o valor vivo — nunca cachear permission entre passos. */
+    function lerPermission_() {
+      try {
+        if (typeof Notification === 'undefined') return 'n/a';
+        return String(Notification.permission || 'default');
+      } catch (e0) { return 'n/a'; }
+    }
+    function refreshMeta_(extra) {
+      var lines = [
+        'Contexto: ' + classificarContexto_(),
+        'Permissão: ' + lerPermission_(),
+        'Código de vínculo: ' + (code ? 'presente' : 'ausente')
+      ];
+      if (extra && extra.length) {
+        for (var i = 0; i < extra.length; i++) lines.push(extra[i]);
+      }
+      setMeta(lines);
+    }
+    function gestureRecente_() {
+      return (Date.now() - lastGestureAt) < 5000;
     }
     async function ensureRegistration_() {
+      if (!('serviceWorker' in navigator)) throw new Error('Service Worker indisponível');
       var reg = await navigator.serviceWorker.register('./sw.js');
       try { await reg.update(); } catch (eU) {}
       await navigator.serviceWorker.ready;
+      if (!reg || !reg.pushManager) throw new Error('PushManager indisponível neste Service Worker');
       return reg;
     }
     async function getOrCreateSubscription_(reg) {
       var existing = null;
-      try { existing = await reg.pushManager.getSubscription(); } catch (eG) { existing = null; }
+      try { existing = await reg.pushManager.getSubscription(); } catch (eG) {
+        throw new Error('Falha ao ler subscription existente.');
+      }
       if (existing) return { sub: existing, reused: true };
       var sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
@@ -122,57 +149,110 @@
       return { sub: sub, reused: false };
     }
 
-    var contexto = classificarContexto_();
-    var labels = {
-      PWA_GITHUB_VALIDA: 'PWA oficial GitHub válida (standalone).',
-      SAFARI_GITHUB: 'Safari na origem GitHub — no iPhone, abra pelo ícone da Tela de Início instalado a partir desta página GitHub (não o Apps Script).',
-      APPS_SCRIPT: 'Contexto Apps Script — não é a PWA oficial. Abra a PWA GitHub.',
-      CONTEXTO_NAO_SUPORTADO: 'Contexto não suportado para Web Push.'
-    };
-    ctx.textContent = labels[contexto] || labels.CONTEXTO_NAO_SUPORTADO;
-    setMeta([
-      'Contexto: ' + contexto,
-      'Permissão: ' + permLabel(),
-      'Código de vínculo: ' + (code ? 'presente' : 'ausente')
-    ]);
+    /**
+     * Garante permission=granted.
+     * - denied → bloqueado (única mensagem de Ajustes)
+     * - default → requestPermission SOMENTE com gesto recente; senão espera toque
+     * - granted → segue
+     * Relê Notification.permission após qualquer request.
+     */
+    async function garantirPermissionGranted_(opts) {
+      opts = opts || {};
+      var allowRequest = !!opts.allowRequest;
+      var perm = lerPermission_();
+      refreshMeta_();
 
-    if (contexto === 'APPS_SCRIPT' || contexto === 'CONTEXTO_NAO_SUPORTADO') {
-      setErr('Abra o FinControl 360° pela PWA oficial instalada a partir de GitHub Pages.');
-      btn.disabled = true;
-    } else if (contexto === 'SAFARI_GITHUB' && /iPhone|iPad|iPod/i.test(navigator.userAgent || '')) {
-      // Não navegar embora nem limpar a UI — permanecer com o código na URL.
-      setInfo('Esta página abriu no Safari. No iPhone, abra pelo ícone FinControl 360° da Tela de Início (PWA GitHub). O código de vínculo permanece nesta URL por alguns minutos.');
-      btn.textContent = 'Ativar notificações';
-      btn.disabled = true;
-    } else if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
-      setErr('As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.');
-      btn.disabled = true;
-    } else if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      btn.textContent = 'Confirmar subscription';
-    } else {
-      btn.textContent = 'Ativar notificações';
+      if (perm === 'denied') {
+        throw new Error(MSG_BLOQUEADO);
+      }
+      if (perm === 'granted') {
+        return 'granted';
+      }
+
+      // default / n/a / outro — NÃO é bloqueado
+      if (!allowRequest || !gestureRecente_()) {
+        setInfo(MSG_DEFAULT);
+        refreshMeta_(['Ação: toque em Ativar notificações (gesto obrigatório no iOS)']);
+        var waitErr = new Error(MSG_DEFAULT);
+        waitErr.code = 'NEED_GESTURE';
+        throw waitErr;
+      }
+
+      setInfo(MSG_SOLICITANDO);
+      refreshMeta_(['Ação: solicitando permissão do sistema']);
+      var result = 'default';
+      try {
+        result = await Notification.requestPermission();
+      } catch (eReq) {
+        result = lerPermission_();
+      }
+      // Fonte de verdade = valor vivo pós-prompt (não confiar só no retorno)
+      perm = lerPermission_();
+      if (perm === 'n/a' && result) perm = String(result);
+      refreshMeta_(['Resultado requestPermission: ' + String(result)]);
+
+      if (perm === 'granted') return 'granted';
+      if (perm === 'denied') throw new Error(MSG_BLOQUEADO);
+
+      // Ainda default (prompt dispensado / iOS sem gesto efetivo)
+      var soft = new Error('Permissão ainda não concedida. Toque novamente em Ativar notificações.');
+      soft.code = 'STILL_DEFAULT';
+      throw soft;
     }
 
-    if (!code) {
-      ctx.textContent += ' Use Ativar dentro do FinControl autenticado para gerar o vínculo.';
+    function aplicarUiInicial_() {
+      var contexto = classificarContexto_();
+      var labels = {
+        PWA_GITHUB_VALIDA: 'PWA oficial GitHub válida (standalone).',
+        SAFARI_GITHUB: 'Safari na origem GitHub — no iPhone, abra pelo ícone FinControl 360° da Tela de Início instalado a partir desta página GitHub (não o Apps Script).',
+        APPS_SCRIPT: 'Contexto Apps Script — não é a PWA oficial. Abra a PWA GitHub.',
+        CONTEXTO_NAO_SUPORTADO: 'Contexto não suportado para Web Push.'
+      };
+      ctx.textContent = labels[contexto] || labels.CONTEXTO_NAO_SUPORTADO;
+      refreshMeta_();
+
+      var perm = lerPermission_();
+      if (contexto === 'APPS_SCRIPT' || contexto === 'CONTEXTO_NAO_SUPORTADO') {
+        setErr('Abra o FinControl 360° pela PWA oficial instalada a partir de GitHub Pages.');
+        btn.disabled = true;
+      } else if (contexto === 'SAFARI_GITHUB' && /iPhone|iPad|iPod/i.test(navigator.userAgent || '')) {
+        setInfo('Esta página abriu no Safari. No iPhone, abra pelo ícone FinControl 360° da Tela de Início (PWA GitHub). O código de vínculo permanece nesta URL por alguns minutos.');
+        btn.textContent = 'Ativar notificações';
+        btn.disabled = true;
+      } else if (perm === 'denied') {
+        setErr(MSG_BLOQUEADO);
+        btn.disabled = true;
+      } else if (perm === 'granted') {
+        setInfo(MSG_GRANTED_PROGRESS);
+        btn.textContent = 'Confirmar subscription';
+        btn.disabled = false;
+      } else {
+        // default = precisa de ação — NUNCA "bloqueado"
+        setInfo(MSG_DEFAULT);
+        btn.textContent = 'Ativar notificações';
+        btn.disabled = false;
+      }
+
+      if (!code) {
+        ctx.textContent += ' Use Ativar dentro do FinControl autenticado para gerar o vínculo.';
+      }
     }
 
-    document.getElementById('btnOpen').onclick = function () {
-      location.href = WEBAPP;
-    };
-
-    function runActivate_() {
+    function runActivate_(fromUserGesture) {
       if (pending) return;
+      if (fromUserGesture) lastGestureAt = Date.now();
       var myOp = ++opId;
       pending = true;
       btn.disabled = true;
       setInfo('Ativando notificações...');
+      refreshMeta_();
 
       var timer = setTimeout(function () {
         if (myOp !== opId) return;
         pending = false;
         btn.disabled = false;
         setErr('Tempo esgotado ao ativar. Tente novamente.');
+        refreshMeta_();
       }, TIMEOUT_MS);
 
       (async function () {
@@ -186,62 +266,115 @@
           }
           if (!suportePush()) throw new Error('Web Push indisponível neste contexto');
 
-          var perm = Notification.permission;
-          if (perm === 'denied') {
-            throw new Error('As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.');
-          }
-          if (perm === 'default') {
-            perm = await Notification.requestPermission();
-          }
-          if (perm !== 'granted') {
-            throw new Error(perm === 'denied'
-              ? 'As notificações estão bloqueadas neste iPhone. Reative em Ajustes > Notificações > FinControl 360°.'
-              : 'Permissão não concedida.');
-          }
+          await garantirPermissionGranted_({ allowRequest: !!fromUserGesture });
+
+          setInfo(MSG_GRANTED_PROGRESS);
+          refreshMeta_();
 
           var reg = await ensureRegistration_();
-          var got = await getOrCreateSubscription_(reg);
+          var ctrl = '';
+          try {
+            ctrl = (navigator.serviceWorker.controller && navigator.serviceWorker.controller.scriptURL) || 'sem-controller-ainda';
+          } catch (eC) { ctrl = 'n/a'; }
+
+          var got;
+          try {
+            got = await getOrCreateSubscription_(reg);
+          } catch (eSub) {
+            // Caso especial: permission default mas subscription existente — não destruir
+            var permNow = lerPermission_();
+            if (permNow !== 'granted') {
+              refreshMeta_(['Estado inconsistente: permission=' + permNow]);
+            }
+            throw eSub;
+          }
+
+          // Se permission ainda default mas já há subscription, não apagar — só reportar
+          if (lerPermission_() === 'default' && got && got.reused) {
+            refreshMeta_([
+              'Estado inconsistente: permission=default com subscription existente (reutilizada)',
+              'SW: ' + ctrl
+            ]);
+          } else {
+            refreshMeta_([
+              'Subscription: sim (' + (got.reused ? 'reutilizada' : 'nova') + ')',
+              'SW: ' + ctrl
+            ]);
+          }
+
           var jsonSub = got.sub.toJSON();
           try { localStorage.setItem('fc_push_subscription_endpoint', jsonSub.endpoint || ''); } catch (eL) {}
-
-          setMeta([
-            'Contexto: ' + c,
-            'Permissão: granted',
-            'Subscription: sim (' + (got.reused ? 'reutilizada' : 'nova') + ')',
-            'Código: ' + (code ? 'presente' : 'ausente')
-          ]);
 
           if (!code) {
             setOk('Subscription local pronta. Volte ao FinControl autenticado e toque Ativar para vincular à conta.');
             return;
           }
 
-          // Não declara ativo aqui — só envia ao bridge/backend.
           setInfo('Vinculando à sua conta…');
           var payload = btoa(unescape(encodeURIComponent(JSON.stringify({
             subscription: jsonSub,
             meta: { userAgent: navigator.userAgent || '', contexto: c }
           }))));
+          // Bridge confirma no Apps Script; app mostra MSG_SUCESSO via ?fcpushok=1
           location.href = WEBAPP + '?fcpush=1&code=' + encodeURIComponent(code) + '#' + payload;
         } catch (err) {
-          setErr(String((err && err.message) || err));
+          var m = String((err && err.message) || err);
+          var codeErr = err && err.code;
+          refreshMeta_();
+          if (codeErr === 'NEED_GESTURE' || codeErr === 'STILL_DEFAULT') {
+            setInfo(m);
+            btn.disabled = false;
+          } else if (m.indexOf('bloqueadas') >= 0 && lerPermission_() !== 'denied') {
+            // Nunca manter "bloqueado" se o valor vivo não é denied
+            setInfo(MSG_DEFAULT);
+            btn.disabled = false;
+          } else {
+            setErr(m);
+          }
         } finally {
           clearTimeout(timer);
           if (myOp === opId) {
             pending = false;
-            if (Notification.permission !== 'denied' && classificarContexto_() === 'PWA_GITHUB_VALIDA') {
+            var p = lerPermission_();
+            if (p !== 'denied' && classificarContexto_() === 'PWA_GITHUB_VALIDA') {
               btn.disabled = false;
             }
+            refreshMeta_();
           }
         }
       })();
     }
-    btn.addEventListener('click', function () { runActivate_(); });
 
-    // Um gesto do Ativar no app: se já estamos na PWA válida com código, segue sem segundo toque.
-    if (code && classificarContexto_() === 'PWA_GITHUB_VALIDA') {
-      setTimeout(function () { runActivate_(); }, 200);
+    document.getElementById('btnOpen').onclick = function () {
+      location.href = WEBAPP_DEV;
+    };
+
+    btn.addEventListener('click', function () {
+      runActivate_(true);
+    });
+
+    aplicarUiInicial_();
+
+    /**
+     * Auto-continuidade SOMENTE se permission já é granted
+     * (não chama requestPermission — seguro sem gesto).
+     * Se default: espera toque do usuário (obrigatório no iOS).
+     */
+    if (code && classificarContexto_() === 'PWA_GITHUB_VALIDA' && lerPermission_() === 'granted') {
+      setTimeout(function () { runActivate_(false); }, 200);
     }
+
+    // Export mínimo para harness local (sem efeito em produção)
+    try {
+      window.__FC_PUSH_ATIVAR__ = {
+        lerPermission_: lerPermission_,
+        classificarContexto_: classificarContexto_,
+        MSG_BLOQUEADO: MSG_BLOQUEADO,
+        MSG_DEFAULT: MSG_DEFAULT,
+        MSG_SUCESSO: MSG_SUCESSO,
+        version: 'v9r2-permission-fix-01'
+      };
+    } catch (eExp) {}
   })();
   </script>
 </body>
